@@ -5,9 +5,9 @@
 > If you want to put this website online in **5 minutes for free**, use **[Render.com](https://render.com)**.
 > 1. Push your code to **GitHub**.
 > 2. Create a "Web Service" on Render and link your GitHub repo.
-> 3. Set the Build Command: `pip install -r backend/requirements.txt`
-> 4. Set the Start Command: `python backend/app.py`
-> 5. **That's it!** Render will give you a public `onrender.com` URL. (Note: Use a "Persistent Disk" if you want your database to save permanently on the free tier).
+> 3. Set the Build Command: `pip install -r requirements.txt`
+> 4. Set the Start Command: `python render_app.py`
+> 5. **That's it!** Render will give you a public `onrender.com` URL. (Note: Use a "Persistent Disk" if you want your database to save permanently).
 
 ---
 
