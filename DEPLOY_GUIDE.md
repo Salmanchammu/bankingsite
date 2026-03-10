@@ -1,13 +1,11 @@
 # Smart Bank - Deployment Guide
 
-> [!TIP]
-> **🚀 The Super Easy "Pro Trick"**
-> If you want to put this website online in **5 minutes for free**, use **[Render.com](https://render.com)**.
-> 1. Push your code to **GitHub**.
-> 2. Create a "Web Service" on Render and link your GitHub repo.
-> 3. Set the Build Command: `pip install -r requirements.txt`
-> 4. Set the Start Command: `python render_app.py`
-> 5. **That's it!** Render will give you a public `onrender.com` URL. (Note: Use a "Persistent Disk" if you want your database to save permanently).
+> [!IMPORTANT]
+> **🚀 Render.com Deployment Fix**
+> Render sometimes incorrectly thinks your project uses Node.js (Yarn). **Delete the default values** and use these instead:
+> 1. **Build Command**: `pip install -r requirements.txt`
+> 2. **Start Command**: `python render_app.py`
+> 3. **Environment**: Ensure **Runtime** is set to **Python 3**.
 
 ---
 
