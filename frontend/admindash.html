@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bank - Admin Dashboard</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="modern-dashboard.css">
+    <link rel="stylesheet" href="admindash.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="face-auth-fixed.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <h1 class="logo-text">Smart<span class="logo-highlight">Bank</span></h1>
+                </div>
+                <p class="menu-label">Menu</p>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="#" class="nav-item" data-page="staff">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Staff Management</span>
+                </a>
+                <a href="#" class="nav-item" data-page="admin-mgmt">
+                    <i class="fas fa-user-shield"></i>
+                    <span>Admin Management</span>
+                </a>
+                <a href="#" class="nav-item" data-page="transactions">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+                <a href="#" class="nav-item" data-page="accounts">
+                    <i class="fas fa-university"></i>
+                    <span>All Accounts</span>
+                </a>
+                <a href="#" class="nav-item" data-page="loans">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Loans</span>
+                </a>
+                <a href="#" class="nav-item" data-page="services">
+                    <i class="fas fa-concierge-bell"></i>
+                    <span>Services</span>
+                </a>
+                <a href="#" class="nav-item" data-page="liquidity">
+                    <i class="fas fa-piggy-bank"></i>
+                    <span>Loan Liquidity Fund</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item" data-page="audit">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Audit Logs</span>
+                </a>
+                <a href="#" class="nav-item" data-page="attendance">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Staff Attendance</span>
+                </a>
+                <a href="#" class="nav-item" data-page="salary">
+                    <i class="fas fa-coins"></i>
+                    <span>Salary Management</span>
+                </a>
+
+                <p class="menu-label">System</p>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>System Settings</span>
+                </a>
+                <a href="#" class="nav-item" data-page="backup">
+                    <i class="fas fa-database"></i>
+                    <span>Backup & Restore</span>
+                </a>
+                <a href="#" onclick="logout()" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img id="adminAvatar" src="" alt="Admin" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name" id="adminName">Administrator</div>
+                        <div class="user-role">System Admin</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="welcome-section">
+                    <h1 id="pageTitle">Admin Dashboard</h1>
+                    <p>System Overview & Management</p>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <!-- Global Search Button / Input -->
+                    <div class="search-container"
+                        style="position: relative; margin-right: 12px; display: flex; align-items: center;">
+                        <input type="text" id="globalSearchInput" placeholder="Search..."
+                            style="padding: 8px 16px 8px 36px; border: 1px solid var(--border-color); border-radius: 20px; outline: none; background: var(--bg-card); color: var(--text-primary); width: 200px; font-family: inherit; transition: all 0.3s ease;">
+                        <i class="fas fa-search"
+                            style="position: absolute; left: 12px; color: var(--text-secondary); pointer-events: none;"></i>
+                    </div>
+                    <button class="action-btn" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="action-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge">7</span>
+                    </button>
+                    <img id="topBarAvatar" src="" alt="Admin" class="user-avatar-small">
+                </div>
+            </div>
+
+            <!-- Notifications Modal -->
+            <div id="notificationsModal" class="modal">
+                <div class="modal-content" style="max-width: 400px; padding: 0;">
+                    <div
+                        style="padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; font-size: 16px;">System Notifications</h3>
+                        <button onclick="closeModal('notificationsModal')"
+                            style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary);">&times;</button>
+                    </div>
+                    <div id="notificationsList" style="max-height: 300px; overflow-y: auto; padding: 16px;">
+                        <p style="text-align: center; color: var(--text-secondary); margin: 0;">No new alerts</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page-content active">
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(128, 0, 0, 0.1); color: #800000;">
+                            <i class="fas fa-users" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statTotalUsers">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Total<br>Users</div>
+                                </div>
+                            </div>
+                            <div class="stat-trend" id="statUsersTrend">
+                                <!-- dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card" style="border-top: 4px solid #10b981;">
+                        <div class="stat-icon" style="background: #ecfdf5; color: #10b981;">
+                            <i class="fas fa-hand-holding-usd" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statLiquidityFund">₹10L</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Loan Liquidity<br>Fund</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(128, 0, 0, 0.1); color: #800000;">
+                            <i class="fas fa-user-tie" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statActiveStaff">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Active<br>Staff</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(128, 0, 0, 0.1); color: #800000;">
+                            <span style="font-size: 20px; font-weight: 700;">Rs</span>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statTotalDeposits">₹0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Total<br>Deposits</div>
+                                </div>
+                            </div>
+                            <div class="stat-trend" id="statDepositsTrend">
+                                <!-- dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(128, 0, 0, 0.1); color: #800000;">
+                            <i class="fas fa-exchange-alt" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statTodayTransactions">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Today's<br>Trans.</div>
+                                </div>
+                            </div>
+                            <div class="stat-trend" id="statTransactionsTrend">
+                                <!-- dynamic content -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="dashboard-grid grid-2">
+                    <!-- Recent Users -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Users</h3>
+                        </div>
+                        <div id="recentUsersList"></div>
+                    </div>
+
+                    <!-- System Alerts -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">System Alerts</h3>
+                        </div>
+                        <div id="systemAlerts"></div>
+                    </div>
+                </div>
+
+                <!-- Transaction Overview -->
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Transaction Overview</h3>
+                    </div>
+                    <div class="invoice-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search..." id="transactionSearch">
+                        </div>
+                        <button class="filter-btn">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                    <div id="transactionsList"></div>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div id="users" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">User Management</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showAddUserModal()">
+                            <i class="fas fa-user-plus"></i>
+                            Add User
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="showSendNotificationModal()">
+                            <i class="fas fa-bell"></i>
+                            Send Notification
+                        </button>
+                    </div>
+                    <div class="invoice-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search users..." id="userSearch">
+                        </div>
+                        <button class="filter-btn">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="table" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr
+                                    style="border-bottom: 2px solid var(--border-color); text-align: left; background: var(--bg-light); color: var(--text-secondary);">
+                                    <th style="padding: 12px;">ID</th>
+                                    <th style="padding: 12px;">Name</th>
+                                    <th style="padding: 12px;">Email</th>
+                                    <th style="padding: 12px;">Phone</th>
+                                    <th style="padding: 12px;">Accs</th>
+                                    <th style="padding: 12px;">Balance</th>
+                                    <th style="padding: 12px;">Status</th>
+                                    <th style="padding: 12px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTable">
+                                <!-- Users will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Staff Page -->
+            <div id="staff" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Staff Management</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showAddStaffModal()">
+                            <i class="fas fa-user-plus"></i>
+                            Add Staff
+                        </button>
+                    </div>
+                    <div id="staffList"></div>
+                </div>
+            </div>
+
+            <!-- Admin Management Page -->
+            <div id="admin-mgmt" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Administrator Management</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showAddAdminModal()">
+                            <i class="fas fa-user-shield"></i>
+                            Add Admin
+                        </button>
+                    </div>
+                    <div id="adminList"></div>
+                </div>
+            </div>
+
+            <!-- Transactions Page -->
+            <div id="transactions" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Transactions</h3>
+                    </div>
+                    <div id="allTransactionsList"></div>
+                </div>
+            </div>
+
+            <!-- Accounts Page -->
+            <div id="accounts" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Accounts</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="table" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr
+                                    style="border-bottom: 2px solid var(--border-color); text-align: left; background: var(--bg-light); color: var(--text-secondary);">
+                                    <th style="padding: 12px;">ID</th>
+                                    <th style="padding: 12px;">User</th>
+                                    <th style="padding: 12px;">Account Number</th>
+                                    <th style="padding: 12px;">Type</th>
+                                    <th style="padding: 12px;">Balance</th>
+                                    <th style="padding: 12px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="accountsTable">
+                                <!-- Accounts will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Page -->
+            <div id="services" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Manage Services & Applications</h3>
+                    </div>
+                    <div class="invoice-controls">
+                        <div class="search-box"
+                            style="display: flex; align-items: center; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 4px 12px; width: 250px;">
+                            <i class="fas fa-search" style="color: var(--text-secondary); margin-right: 8px;"></i>
+                            <input type="text" placeholder="Search applications..." id="serviceSearch"
+                                style="border: none; background: transparent; outline: none; color: var(--text-primary); width: 100%;">
+                        </div>
+                    </div>
+                    <div id="pendingApplicationsList">
+                        <p style="padding:16px;text-align:center;color:#9ca3af;">No applications found.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loans Page -->
+            <div id="loans" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Loan Management</h3>
+                    </div>
+                    <div class="table-container">
+                        <table class="table" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr
+                                    style="border-bottom: 2px solid var(--border-color); text-align: left; background: var(--bg-light); color: var(--text-secondary);">
+                                    <th style="padding: 12px;">ID</th>
+                                    <th style="padding: 12px;">User</th>
+                                    <th style="padding: 12px;">Loan Type</th>
+                                    <th style="padding: 12px;">Amount</th>
+                                    <th style="padding: 12px;">Tenure</th>
+                                    <th style="padding: 12px;">Rate</th>
+                                    <th style="padding: 12px;">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="loansTable">
+                                <!-- Loans will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loan Liquidity Fund Page -->
+            <div id="liquidity" class="page-content">
+                <div class="stats-grid" style="margin-bottom: 24px;">
+                    <div class="stat-card" style="border-top: 4px solid #10b981;">
+                        <div class="stat-icon" style="background: #ecfdf5; color: #10b981;">
+                            <i class="fas fa-piggy-bank" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="liqFundBalance">—</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Current Fund<br>Balance</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-top: 4px solid #800000;">
+                        <div class="stat-icon" style="background: rgba(128,0,0,0.1); color: #800000;">
+                            <i class="fas fa-check-double" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="liqTotalPaid">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Loans<br>Fully Paid</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-top: 4px solid #f59e0b;">
+                        <div class="stat-icon" style="background: #fffbeb; color: #f59e0b;">
+                            <i class="fas fa-hourglass-half" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="liqActiveLoans">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Active<br>Loans</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-top: 4px solid #ef4444;">
+                        <div class="stat-icon" style="background: #fef2f2; color: #ef4444;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="liqOverdueLoans">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Overdue<br>Loans</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"
+                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+                        <h3 class="card-title"><i class="fas fa-history"
+                                style="color: #10b981; margin-right: 8px;"></i>Loan Repayment History</h3>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <select id="liqFilterStatus" class="form-input" style="width: auto; padding: 6px 12px;"
+                                onchange="loadLiquidityPage()">
+                                <option value="">All Loans</option>
+                                <option value="approved">Active</option>
+                                <option value="closed">Fully Paid</option>
+                            </select>
+                            <button class="btn btn-primary btn-sm" onclick="applyDailyPenalties()"
+                                title="Apply daily late charges to overdue loans">
+                                <i class="fas fa-bolt"></i> Apply Late Charges
+                            </button>
+                        </div>
+                    </div>
+                    <div id="liqLoansList" style="overflow-x: auto; padding: 16px;">
+                        <p style="text-align: center; padding: 2rem; color: var(--text-secondary);">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Page -->
+            <div id="reports" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Reports & Analytics</h3>
+                    </div>
+                    <div id="reportsContent"></div>
+                </div>
+            </div>
+
+            <!-- Audit Page -->
+            <div id="audit" class="page-content">
+                <div id="auditLogs"></div>
+            </div>
+
+            <div id="attendance" class="page-content">
+                <div class="dashboard-grid grid-3" style="margin-bottom: 24px;">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-label">Present Today</div>
+                            <div class="stat-value" id="statTodayPresent">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(128, 0, 0, 0.1); color: #800000;">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-label">Total Staff</div>
+                            <div class="stat-value" id="statTotalStaff">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                            <i class="fas fa-hourglass-half"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-label">Avg. Working Hours</div>
+                            <div class="stat-value" id="statAvgWorkingHours">0.0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header"
+                        style="justify-content: space-between; display: flex; align-items: center;">
+                        <h3 class="card-title">Staff Attendance Tracking</h3>
+                        <div class="header-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="loadAttendanceTrackingPage()"><i
+                                    class="fas fa-sync-alt"></i> Refresh</button>
+                            <button class="btn btn-primary btn-sm" onclick="exportAttendance()"><i
+                                    class="fas fa-file-export"></i> Export Report</button>
+                        </div>
+                    </div>
+                    <div class="invoice-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search staff name or ID..." id="attendanceSearch">
+                        </div>
+                        <div class="filters" style="display: flex; gap: 10px;">
+                            <input type="date" id="attendanceDateFilter" class="form-control"
+                                style="padding: 8px; border: 1px solid var(--border-color); border-radius: 6px;">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Staff ID</th>
+                                    <th>Staff Name</th>
+                                    <th>Date</th>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                    <th>Working Hours</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminAttendanceTable">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Salary Management Page -->
+            <div id="salary" class="page-content">
+                <div class="card">
+                    <div class="card-header" style="justify-content: space-between;">
+                        <h3 class="card-title">Salary Management - <span id="currentSalaryMonth">...</span></h3>
+                        <div class="header-actions">
+                            <span class="badge badge-info" id="salaryStatsDays"
+                                style="background: rgba(59, 130, 246, 0.1); color: var(--primary); padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;">Month
+                                Days: ...</span>
+                        </div>
+                    </div>
+                    <div class="invoice-controls"
+                        style="padding: 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search staff..." id="salarySearch">
+                        </div>
+                        <p class="text-secondary" style="font-size: 13px; margin: 0; opacity: 0.8;">
+                            <i class="fas fa-info-circle"></i> Formula: <code>(Base Salary / Days) * Attendance</code>
+                        </p>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Staff Code</th>
+                                    <th>Name</th>
+                                    <th>Department</th>
+                                    <th>Base Salary (₹)</th>
+                                    <th>Attendance</th>
+                                    <th>Current Pay (₹)</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminSalaryTable">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settings" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">System Settings</h3>
+                        <button class="btn btn-primary" onclick="openFaceRegistration()">
+                            <i class="fas fa-user-plus"></i> Register Face
+                        </button>
+                    </div>
+                    <div id="settingsContent"></div>
+                </div>
+            </div>
+
+            <!-- Backup Page -->
+            <div id="backup" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Backup & Restore</h3>
+                    </div>
+                    <div id="backupContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Staff Modal -->
+    <div id="addStaffModal" class="modal">
+        <div
+            style="background:#fff;border-radius:16px;width:100%;max-width:520px;padding:32px;margin:20px;box-shadow:0 24px 60px rgba(0,0,0,.2);position:relative;">
+            <button onclick="closeAddStaffModal()"
+                style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#6b7280;">&times;</button>
+            <h2 style="margin:0 0 6px;font-size:20px;font-weight:700;color:#1f2937;">
+                <i class="fas fa-user-plus" style="color:#800000;margin-right:8px;"></i>Add New Staff Member
+            </h2>
+            <p style="color:#6b7280;font-size:14px;margin:0 0 24px;">Fill in the details to create a staff account. A
+                login ID will be auto-generated.</p>
+            <form id="addStaffForm" onsubmit="submitAddStaff(event)">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div style="grid-column:span 2;">
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Full
+                            Name *</label>
+                        <input id="staffName" type="text" placeholder="e.g. Priya Sharma" required
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Email
+                            *</label>
+                        <input id="staffEmail" type="email" placeholder="priya@smartbank.in" required
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Phone</label>
+                        <input id="staffPhone" type="text" placeholder="+91 9876543210"
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Department</label>
+                        <select id="staffDepartment"
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                            <option value="Customer Service">Customer Service</option>
+                            <option value="Loans">Loans Department</option>
+                            <option value="Cards">Cards Department</option>
+                            <option value="Technical Support">Technical Support</option>
+                            <option value="Operations">Operations</option>
+                            <option value="General">General</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Position</label>
+                        <select id="staffPosition"
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                            <option value="Staff">Staff</option>
+                            <option value="Senior Staff">Senior Staff</option>
+                            <option value="Team Lead">Team Lead</option>
+                            <option value="Manager">Manager</option>
+                            <option value="Junior Manager">Junior Manager (Admin)</option>
+                            <option value="Senior Manager">Senior Manager (Admin)</option>
+                        </select>
+                    </div>
+                    <div style="grid-column:span 2;">
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Password
+                            *</label>
+                        <input id="staffPassword" type="password" placeholder="Min. 6 characters" required minlength="6"
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                </div>
+                <div id="staffFormError"
+                    style="display:none;background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:8px;font-size:13px;margin-top:16px;">
+                </div>
+                <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;">
+                    <button type="button" onclick="closeAddStaffModal()"
+                        style="padding:10px 20px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;font-weight:600;color:#374151;">Cancel</button>
+                    <button type="submit" id="addStaffBtn"
+                        style="padding:10px 24px;background:#800000;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;">
+                        <i class="fas fa-user-plus"></i> Add Staff
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Promote Staff Modal -->
+    <div id="promoteStaffModal"
+        style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+        <div
+            style="background:white;width:100%;max-width:400px;border-radius:12px;padding:24px;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #e5e7eb;padding-bottom:12px;">
+                <h3 style="margin:0;font-size:18px;color:#111827;">Promote Staff: <span id="promoteStaffName"></span>
+                </h3>
+                <button onclick="closePromoteModal()"
+                    style="background:none;border:none;font-size:20px;color:#6b7280;cursor:pointer;">&times;</button>
+            </div>
+
+            <p style="font-size:14px;color:#4b5563;margin-bottom:16px;">Select the new role for this staff member:</p>
+
+            <div style="margin-bottom:20px;">
+                <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Target
+                    Level</label>
+                <select id="promoteRoleSelect"
+                    style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    <option value="Senior Staff">Senior Staff</option>
+                    <option value="Manager">Manager</option>
+                    <option value="Junior Manager">Junior Manager (Admin)</option>
+                    <option value="Senior Manager">Senior Manager (Admin)</option>
+                    <option value="System Admin">System Admin</option>
+                </select>
+                <p style="font-size:12px;color:#6b7280;margin-top:8px;">* System Admins will be migrated to the master
+                    admin database.</p>
+            </div>
+
+            <div style="display:flex;gap:12px;justify-content:flex-end;">
+                <button type="button" onclick="closePromoteModal()"
+                    style="padding:10px 20px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;font-weight:600;color:#374151;">Cancel</button>
+                <button type="button" onclick="confirmPromotion()"
+                    style="padding:10px 24px;background:#f59e0b;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;">
+                    <i class="fas fa-crown"></i> Promote
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Department Modal -->
+    <div id="changeDeptModal"
+        style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:1000;align-items:center;justify-content:center;">
+        <div
+            style="background:white;width:100%;max-width:400px;border-radius:12px;padding:24px;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #e5e7eb;padding-bottom:12px;">
+                <h3 style="margin:0;font-size:18px;color:#111827;">Change Dept: <span id="changeDeptStaffName"></span>
+                </h3>
+                <button onclick="closeChangeDeptModal()"
+                    style="background:none;border:none;font-size:20px;color:#6b7280;cursor:pointer;">&times;</button>
+            </div>
+
+            <p style="font-size:14px;color:#4b5563;margin-bottom:16px;">Assign this staff member to a new department:
+            </p>
+
+            <div style="margin-bottom:20px;">
+                <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Target
+                    Department</label>
+                <select id="changeDeptSelect"
+                    style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    <option value="Customer Service">Customer Service</option>
+                    <option value="Loans">Loans Department</option>
+                    <option value="Cards">Cards Department</option>
+                    <option value="Technical Support">Technical Support</option>
+                    <option value="Operations">Operations</option>
+                    <option value="General">General</option>
+                </select>
+            </div>
+
+            <div style="display:flex;gap:12px;justify-content:flex-end;">
+                <button type="button" onclick="closeChangeDeptModal()"
+                    style="padding:10px 20px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;font-weight:600;color:#374151;">Cancel</button>
+                <button type="button" onclick="confirmDepartmentChange()"
+                    style="padding:10px 24px;background:#800000;color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;">
+                    <i class="fas fa-building"></i> Update
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content"
+            style="background:#ffffff; border-radius:20px; max-width:520px; width:90%; max-height:90vh; overflow-y:auto; box-shadow:0 25px 50px -12px rgba(0,0,0,0.25); border: 1px solid rgba(0,0,0,0.1); transform: scale(0.95); opacity: 0; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);">
+            <div
+                style="background:linear-gradient(135deg,#800000,#a52a2a); padding:24px; border-radius:16px 16px 0 0; display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0; color:white; font-size:18px;"><i class="fas fa-user-plus"
+                        style="margin-right:10px;"></i>Add New User</h3>
+                <button onclick="closeModal('addUserModal')"
+                    style="background:none; border:none; color:white; font-size:22px; cursor:pointer; line-height:1;">&times;</button>
+            </div>
+            <form id="addUserForm" onsubmit="submitAddUser(event)" style="padding:24px;">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px;">
+                    <div style="grid-column:span 2;">
+                        <label
+                            style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Full
+                            Name *</label>
+                        <input type="text" id="newUserName" required placeholder="e.g. Rahul Sharma"
+                            style="width:100%; padding:10px 14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-light); color:var(--text-primary); font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Username
+                            *</label>
+                        <input type="text" id="newUserUsername" required placeholder="e.g. rahul123"
+                            style="width:100%; padding:10px 14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-light); color:var(--text-primary); font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Phone</label>
+                        <input type="tel" id="newUserPhone" placeholder="e.g. 9876543210"
+                            style="width:100%; padding:10px 14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-light); color:var(--text-primary); font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div style="grid-column:span 2;">
+                        <label
+                            style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Email
+                            *</label>
+                        <input type="email" id="newUserEmail" required placeholder="e.g. rahul@email.com"
+                            style="width:100%; padding:10px 14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-light); color:var(--text-primary); font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Password
+                            *</label>
+                        <input type="password" id="newUserPassword" required minlength="6"
+                            placeholder="Min 6 characters"
+                            style="width:100%; padding:10px 14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-light); color:var(--text-primary); font-size:14px; box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px; font-weight:600; color:var(--text-secondary); display:block; margin-bottom:6px;">Date
+                            of Birth</label>
+                        <input type="date" id="newUserDob"
+                            style="width:100%; padding:10px 14px; border:1px solid var(--border-color); border-radius:8px; background:var(--bg-light); color:var(--text-primary); font-size:14px; box-sizing:border-box;">
+                    </div>
+                </div>
+                <div id="addUserError"
+                    style="display:none; background:#fef2f2; color:#b91c1c; padding:10px 14px; border-radius:8px; font-size:13px; margin-bottom:16px;">
+                </div>
+                <div style="display:flex; justify-content:flex-end; gap:12px;">
+                    <button type="button" onclick="closeModal('addUserModal')"
+                        style="padding:10px 20px; border:1px solid var(--border-color); border-radius:8px; background:none; color:var(--text-primary); cursor:pointer; font-size:14px;">Cancel</button>
+                    <button type="submit" id="addUserSubmitBtn"
+                        style="padding:10px 24px; background:linear-gradient(135deg,#800000,#a52a2a); color:white; border:none; border-radius:8px; cursor:pointer; font-size:14px; font-weight:600;">
+                        <i class="fas fa-user-plus"></i> Create User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- Add Admin Modal -->
+    <div id="addAdminModal" class="modal">
+        <div
+            style="background:#fff;border-radius:16px;width:100%;max-width:520px;padding:32px;margin:20px;box-shadow:0 24px 60px rgba(0,0,0,.2);position:relative;">
+            <button onclick="closeAddAdminModal()"
+                style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#6b7280;">&times;</button>
+            <h2 style="margin:0 0 6px;font-size:20px;font-weight:700;color:#1f2937;">
+                <i class="fas fa-user-shield" style="color:var(--primary);margin-right:8px;"></i>Add New Admin
+            </h2>
+            <p style="color:#6b7280;font-size:14px;margin:0 0 24px;">Create a new administrator account with specific
+                access levels.</p>
+            <form id="addAdminForm" onsubmit="submitAddAdmin(event)">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div style="grid-column:span 2;">
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Full
+                            Name *</label>
+                        <input id="adminFullName" type="text" placeholder="e.g. Administrator" required
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Username
+                            *</label>
+                        <input id="adminUsername" type="text" placeholder="unique_username" required
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Email
+                            *</label>
+                        <input id="adminEmail" type="email" placeholder="admin@smartbank.in" required
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                    <div>
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Access
+                            Level</label>
+                        <select id="adminLevel"
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                            <option value="Junior Manager">Junior Manager</option>
+                            <option value="Senior Manager">Senior Manager</option>
+                            <option value="System Admin">System Admin</option>
+                        </select>
+                    </div>
+                    <div style="grid-column:span 2;">
+                        <label
+                            style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Password
+                            *</label>
+                        <input id="adminPassword" type="password" placeholder="Min. 8 characters" required minlength="8"
+                            style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    </div>
+                </div>
+                <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;">
+                    <button type="button" onclick="closeAddAdminModal()"
+                        style="padding:10px 20px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;font-weight:600;color:#374151;">Cancel</button>
+                    <button type="submit" class="btn btn-primary"
+                        style="padding:10px 24px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;">
+                        <i class="fas fa-plus"></i> Create Admin
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Promote Admin Modal -->
+    <div id="promoteAdminModal" class="modal">
+        <div
+            style="background:#fff;border-radius:12px;padding:24px;width:100%;max-width:400px;box-shadow:0 10px 25px rgba(0,0,0,0.1);">
+            <div
+                style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;border-bottom:1px solid #e5e7eb;padding-bottom:12px;">
+                <h3 style="margin:0;font-size:18px;color:#111827;">Modify Level: <span
+                        id="promoteAdminNameDisplay"></span></h3>
+                <button onclick="closePromoteAdminModal()"
+                    style="background:none;border:none;font-size:20px;color:#6b7280;cursor:pointer;">&times;</button>
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="font-size:13px;font-weight:600;color:#374151;display:block;margin-bottom:6px;">Target
+                    Level</label>
+                <select id="promoteAdminLevelSelect"
+                    style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                    <option value="Junior Manager">Junior Manager</option>
+                    <option value="Senior Manager">Senior Manager</option>
+                    <option value="System Admin">System Admin</option>
+                </select>
+            </div>
+            <div style="display:flex;gap:12px;justify-content:flex-end;">
+                <button type="button" onclick="closePromoteAdminModal()"
+                    style="padding:10px 20px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;font-weight:600;color:#374151;">Cancel</button>
+                <button type="button" onclick="confirmAdminPromotion()"
+                    style="padding:10px 24px;background:var(--primary);color:white;border:none;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;">
+                    <i class="fas fa-check"></i> Update Level
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Salary Modal -->
+    <div id="updateSalaryModal" class="modal">
+        <div
+            style="background:#fff;border-radius:16px;width:100%;max-width:400px;padding:32px;margin:20px;box-shadow:0 24px 60px rgba(0,0,0,.2);position:relative;">
+            <button onclick="closeModal('updateSalaryModal')"
+                style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:20px;cursor:pointer;color:#6b7280;">&times;</button>
+            <h2 style="margin:0 0 6px;font-size:20px;font-weight:700;color:#1f2937;">
+                <i class="fas fa-money-bill-wave" style="color:#10b981;margin-right:8px;"></i>Update Base Salary
+            </h2>
+            <p style="color:#6b7280;font-size:14px;margin:0 0 24px;">Set the monthly base salary for <span
+                    id="targetStaffSalaryName" style="font-weight: 600;"></span>.</p>
+            <form id="updateSalaryForm" onsubmit="submitSalaryUpdate(event)">
+                <input type="hidden" id="targetStaffSalaryId">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="font-size:13px;font-weight:700;color:#111827;display:block;margin-bottom:6px;">Base
+                        Salary (₹)</label>
+                    <input id="newBaseSalaryInput" type="number" step="0.01" placeholder="e.g. 50000" required
+                        style="width:100%;padding:10px 14px;border:1px solid #e5e7eb;border-radius:8px;font-size:14px;box-sizing:border-box;">
+                </div>
+                <div style="display:flex;gap:12px;justify-content:flex-end;margin-top:24px;">
+                    <button type="button" onclick="closeModal('updateSalaryModal')"
+                        style="padding:10px 20px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;cursor:pointer;font-weight:600;color:#374151;">Cancel</button>
+                    <button type="submit" class="btn btn-primary"
+                        style="padding:10px 24px;border-radius:8px;cursor:pointer;font-weight:600;font-size:14px;background:#10b981;border:none;color:white;">
+                        Update Salary
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Activity Modal -->
+    <div id="userActivityModal" class="modal">
+        <div class="modal-content" style="max-width: 900px; width:95%; padding: 0; overflow: hidden; max-height:90vh;">
+            <div
+                style="background: var(--primary-color); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 18px;"><i class="fas fa-history"></i> User Activity: <span
+                        id="activityUserName"></span></h3>
+                <button onclick="closeModal('userActivityModal')"
+                    style="background: none; border: none; font-size: 24px; cursor: pointer; color: white;">&times;</button>
+            </div>
+            <div id="activityDetails"
+                style="padding: 20px; max-height: 80vh; overflow-y: auto; background: var(--bg-card);">
+            </div>
+        </div>
+    </div>
+
+    <script src="api-config.js"></script>
+    <script src="face-auth-fixed.js"></script>
+    <script src="admindash.js"></script>
+
+    <!-- Send Notification Modal -->
+    <div id="sendNotificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Send Notification</h3>
+                <button class="modal-close" onclick="closeModal('sendNotificationModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="sendNotificationForm" onsubmit="submitSendNotification(event)">
+                    <div class="form-group">
+                        <label class="form-label">Recipient User ID</label>
+                        <input type="text" id="notifUserId" class="form-input"
+                            placeholder="User ID or 'ALL' for everyone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" id="notifTitle" class="form-input" placeholder="Notification Title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea id="notifMessage" class="form-input" rows="3" placeholder="Notification Message"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Type</label>
+                        <select id="notifType" class="form-select">
+                            <option value="info">Info</option>
+                            <option value="success">Success</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Alert</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('sendNotificationModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="sendNotifSubmitBtn">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

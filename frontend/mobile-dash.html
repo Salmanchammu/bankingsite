@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#4f46e5">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="assets/icon-192x192.png">
+    <title>SmartBank | Mobile Dashboard</title>
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="modern-dashboard.css">
+    <link rel="stylesheet" href="chatbot.css">
+    <link rel="stylesheet" href="mobile.css">
+</head>
+
+<body>
+    <div class="mobile-wrapper">
+        <!-- Dashboard Content -->
+        <div id="dashboardPage" class="page-content active">
+            <header class="mobile-header">
+                <div class="brand-logo">
+                    <i class="fas fa-landmark"></i>
+                </div>
+                <div class="header-actions">
+                    <div style="position: relative; display: inline-block; cursor: pointer;"
+                        onclick="toggleMobileNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span id="mobileNotifBadge"
+                            style="display: none; position: absolute; top: -5px; right: -5px; background: #e11d48; color: white; border-radius: 50%; font-size: 10px; width: 14px; height: 14px; text-align: center; line-height: 14px; font-weight: bold;">0</span>
+                    </div>
+                    <i class="fas fa-comment-dots"
+                        onclick="if(window.smartBankChatbot) window.smartBankChatbot.toggleChat()"></i>
+                    <i onclick="logout()" class="fas fa-sign-out-alt"></i>
+                </div>
+            </header>
+
+            <div class="welcome-section">
+                <!-- Real-time Balance Card -->
+                <div class="balance-card" id="mobileBalanceCard">
+                    <div class="balance-info">
+                        <span class="balance-label" id="mobileBalanceLabel">Total Balance</span>
+                        <div class="balance-amount-wrapper">
+                            <span id="mobileBalanceAmount" class="balance-amount balance-hidden">••••••</span>
+                        </div>
+                        <div id="mobileAccountInfo" style="font-size:11px; opacity:0.9; margin-top:4px; display:none;">
+                        </div>
+                    </div>
+                    <div class="balance-actions">
+                        <button class="btn-balance-action" id="refreshBalanceBtn" onclick="refreshMobileBalance()"
+                            title="Refresh Balance">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                        <button class="btn-balance-action" id="toggleBalanceBtn" onclick="toggleBalanceVisibility()"
+                            title="Show/Hide Balance">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dash-tabs">
+                    <div id="tabSavings" class="dash-tab dash-tab-active" onclick="toggleCardTab('savings')">
+                        Debit Card</div>
+                    <div id="tabCredit" class="dash-tab" onclick="toggleCardTab('credit')">
+                        Credit Card</div>
+                </div>
+
+                <div class="card-container" id="virtualCardContainer">
+                    <!-- Virtual Card or Apply Button will be rendered here by JS -->
+                </div>
+
+                <div class="section-title">
+                    <span>Suggested for you</span>
+                </div>
+
+                <div class="grid-actions">
+                    <div class="action-item" onclick="showApplyFD()">
+                        <div class="action-icon"><i class="fas fa-university"></i></div>
+                        <span class="action-label">Fixed<br>Deposit</span>
+                    </div>
+                    <div class="action-item" onclick="showMutualFundModal()">
+                        <div class="action-icon"><i class="fas fa-chart-line"></i></div>
+                        <span class="action-label">Mutual<br>Fund</span>
+                    </div>
+                    <div class="action-item" onclick="showLifeInsuranceModal()">
+                        <div class="action-icon"><i class="fas fa-umbrella"></i></div>
+                        <span class="action-label">Life<br>Insurance</span>
+                    </div>
+                    <div class="action-item" onclick="showGoldLoanModal()">
+                        <div class="action-icon"><i class="fas fa-coins"></i></div>
+                        <span class="action-label">Gold<br>Loan</span>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span>Pay & Transfers</span>
+                        <div class="bbps-logo" onclick="openQrScanner()" style="cursor: pointer; color: #8b0000;">
+                            <i class="fas fa-qrcode"></i> Scan QR
+                        </div>
+                    </div>
+                    <span class="view-more">View More <i class="fas fa-chevron-right"></i></span>
+                </div>
+
+                <div class="grid-actions">
+                    <div class="action-item" onclick="showTransferPage()">
+                        <div class="action-icon" style="background: #fff0f0;"><i class="fas fa-university"></i></div>
+                        <span class="action-label">Bank<br>Transfer</span>
+                    </div>
+                    <div class="action-item" onclick="showBillPayPage('UPI Pay')">
+                        <div class="action-icon" style="background: #f0f7ff;"><i class="fas fa-mobile-alt"></i></div>
+                        <span class="action-label">UPI<br>Pay</span>
+                    </div>
+                    <div class="action-item" onclick="showBillPayPage('Self Transfer')">
+                        <div class="action-icon" style="background: #fdfae5;"><i class="fas fa-exchange-alt"></i></div>
+                        <span class="action-label">Self<br>Transfer</span>
+                    </div>
+                    <div class="action-item" onclick="showBillPayPage('Personal Loan')">
+                        <div class="action-icon" style="background: #f0fff4;"><i class="fas fa-hand-holding-usd"></i>
+                        </div>
+                        <span class="action-label">Personal<br>Loan</span>
+                    </div>
+                </div>
+            </div> <!-- Closing welcome-section -->
+        </div>
+
+        <!-- Profile Page -->
+        <div id="profilePage" class="page-content" style="display: none;">
+            <div class="welcome-section" style="padding-top: 40px;">
+                <h1 class="welcome-title">Welcome.</h1>
+                <div class="last-login" id="lastLogin">Last Login Time: Loading...</div>
+
+                <div class="profile-card">
+                    <div class="profile-group">
+                        <div class="profile-item">
+                            <label>Customer ID</label>
+                            <span id="profCustId">Loading...</span>
+                        </div>
+                        <div class="profile-item">
+                            <label>Mobile Number</label>
+                            <span id="profPhone">Loading...</span>
+                        </div>
+                    </div>
+                    <div class="profile-group">
+                        <div class="profile-item">
+                            <label>Email ID</label>
+                            <span id="profEmail">Loading...</span>
+                        </div>
+                        <div class="profile-item">
+                            <label>Date of Birth</label>
+                            <span id="profDob">Loading...</span>
+                        </div>
+                    </div>
+                    <div style="text-align: right; margin-top: 10px;">
+                        <span style="color: var(--primary-maroon); font-size: 14px; font-weight: 600;">View
+                            Details</span>
+                    </div>
+                </div>
+
+                <div class="section-title">Linked Accounts</div>
+                <div id="profileAccountsList">
+                    <!-- Accounts will be rendered here by JS -->
+                </div>
+
+                <div class="search-container">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search Services">
+                    </div>
+                </div>
+
+                <div class="section-title">Profile Settings</div>
+
+                <div class="grid-actions">
+                    <div class="action-item" onclick="showAccountModal()">
+                        <div class="action-icon"><i class="fas fa-plus-circle"></i></div>
+                        <span class="action-label">Open<br>Account</span>
+                    </div>
+                    <div class="action-item" onclick="showPasscodeSetup()">
+                        <div class="action-icon"><i class="fas fa-fingerprint"></i></div>
+                        <span class="action-label">Login<br>Passcode</span>
+                    </div>
+                    <div class="action-item" onclick="handleResetPassword()">
+                        <div class="action-icon"><i class="fas fa-lock"></i></div>
+                        <span class="action-label">Reset<br>Password</span>
+                    </div>
+                    <div class="action-item" onclick="handleManageKYC()">
+                        <div class="action-icon"><i class="fas fa-user-shield"></i></div>
+                        <span class="action-label">Manage<br>KYC</span>
+                    </div>
+                    <div class="action-item" onclick="handleDeactivate()">
+                        <div class="action-icon"><i class="fas fa-trash-alt"></i></div>
+                        <span class="action-label">Deactivate<br>Account</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Page -->
+        <div id="historyPage" class="page-content" style="display: none;">
+            <div class="welcome-section" style="padding-top: 40px;">
+                <h1 class="welcome-title">Transactions</h1>
+                <p style="color: var(--text-grey); margin-bottom: 20px;">Your recent account activity</p>
+
+                <div id="mobileTransactionList" style="margin-top: 20px;">
+                    <div style="text-align: center; padding: 40px;">
+                        <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: var(--primary-maroon);"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- More Page -->
+        <div id="morePage" class="page-content" style="display: none;">
+            <div class="welcome-section" style="padding-top: 40px;">
+                <h1 class="welcome-title">More</h1>
+                <p style="color: var(--text-grey); margin-bottom: 20px;">Additional services and settings</p>
+
+                <div class="grid-actions">
+                    <div class="action-item"
+                        onclick="logMobileActivity('View Offers'); alert('Check back later for active offers!')">
+                        <div class="action-icon" style="background: #fdfae5; color: #d97706;"><i
+                                class="fas fa-tags"></i></div>
+                        <span class="action-label">Offers</span>
+                    </div>
+                    <div class="action-item" onclick="showSupportPage()">
+                        <div class="action-icon" style="background: #eff6ff; color: #1e40af;"><i
+                                class="fas fa-headset"></i></div>
+                        <span class="action-label">Support</span>
+                    </div>
+                    <div class="action-item" onclick="showFAQPage()">
+                        <div class="action-icon" style="background: #f0fdf4; color: #166534;"><i
+                                class="fas fa-question-circle"></i></div>
+                        <span class="action-label">FAQs</span>
+                    </div>
+                    <div class="action-item"
+                        onclick="logMobileActivity('Locate Branch'); alert('Branch locator coming soon.')">
+                        <div class="action-icon" style="background: #fef2f2; color: #991b1b;"><i
+                                class="fas fa-map-marker-alt"></i></div>
+                        <span class="action-label">Locate Us</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQs Page -->
+        <div id="faqPage" class="page-content" style="display: none;">
+            <div class="welcome-section" style="padding-top: 40px;">
+                <h1 class="welcome-title">FAQs</h1>
+                <p style="color: var(--text-grey); margin-bottom: 20px;">Frequently Asked Questions</p>
+
+                <div
+                    style="background: #fff; border-radius: 12px; border: 1px solid #eee; overflow: hidden; margin-bottom: 20px;">
+                    <div style="padding: 15px; border-bottom: 1px solid #f3f4f6;">
+                        <h4 style="margin: 0; color: #1e293b; font-size: 14px;">How do I reset my NetBanking password?
+                        </h4>
+                        <p style="margin: 5px 0 0; color: #64748b; font-size: 13px;">Go to My Profile > Reset Password
+                            and enter your new 4-digit passcode.</p>
+                    </div>
+                    <div style="padding: 15px; border-bottom: 1px solid #f3f4f6;">
+                        <h4 style="margin: 0; color: #1e293b; font-size: 14px;">How do I block a lost debit card?</h4>
+                        <p style="margin: 5px 0 0; color: #64748b; font-size: 13px;">Currently, you must contact
+                            customer support or visit your nearest branch immediately to block a lost card.</p>
+                    </div>
+                    <div style="padding: 15px; border-bottom: 1px solid #f3f4f6;">
+                        <h4 style="margin: 0; color: #1e293b; font-size: 14px;">What are the daily transfer limits?</h4>
+                        <p style="margin: 5px 0 0; color: #64748b; font-size: 13px;">The default daily transfer limit
+                            across all channels (UPI, IMPS, NEFT) is ₹2,00,000.</p>
+                    </div>
+                    <div style="padding: 15px;">
+                        <h4 style="margin: 0; color: #1e293b; font-size: 14px;">Can I open a Fixed Deposit via the app?
+                        </h4>
+                        <p style="margin: 5px 0 0; color: #64748b; font-size: 13px;">Yes! On the Home tab, under
+                            'Suggested for you', tap the Fixed Deposit icon to apply instantly.</p>
+                    </div>
+                </div>
+
+                <button onclick="switchTab('more')" class="btn-secondary" style="width: 100%;">Back to More</button>
+            </div>
+        </div>
+
+        <!-- Support Ticket Page -->
+        <div id="supportPage" class="page-content" style="display: none;">
+            <div class="welcome-section" style="padding-top: 40px;">
+                <h1 class="welcome-title">Contact Support</h1>
+                <p style="color: var(--text-grey); margin-bottom: 20px;">Submit a detailed ticket below.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <select id="supportSubject" class="form-input">
+                        <option value="" disabled selected>Select a category</option>
+                        <option value="Account Inquiry">Account Inquiry</option>
+                        <option value="Transaction Dispute">Transaction Dispute</option>
+                        <option value="Card Services">Card Management</option>
+                        <option value="Loan/Investment">Loans & Investments</option>
+                        <option value="Other">Other / General Feedback</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Message Details</label>
+                    <textarea id="supportMessage" class="form-input" rows="4"
+                        placeholder="Describe your issue in detail..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Priority</label>
+                    <div style="display: flex; gap: 10px;">
+                        <label style="display: flex; align-items: center; gap: 5px; font-size: 14px; cursor: pointer;">
+                            <input type="radio" name="supportPriority" value="low"> Low
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; font-size: 14px; cursor: pointer;">
+                            <input type="radio" name="supportPriority" value="normal" checked> Normal
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 5px; font-size: 14px; cursor: pointer;">
+                            <input type="radio" name="supportPriority" value="urgent"> Urgent
+                        </label>
+                    </div>
+                </div>
+
+                <div id="supportError" style="color: #ef4444; font-size: 13px; margin-bottom: 10px; display: none;">
+                </div>
+
+                <button onclick="submitSupportTicket()" class="btn-primary-maroon" id="supportSubmitBtn"
+                    style="margin-bottom: 10px;">Submit Ticket</button>
+                <button onclick="switchTab('more')" class="btn-secondary" style="width: 100%;">Cancel</button>
+            </div>
+        </div>
+
+        <div id="upiPage" class="page-content" style="display: none;">
+            <div class="welcome-section">
+                <h2 class="welcome-title">UPI Payments</h2>
+                <p style="color: var(--text-grey); margin-bottom: 20px;">Fast & Secure via NPCI Sandbox</p>
+
+                <div id="upiStatusBox" style="margin-bottom: 20px;">
+                </div>
+
+                <div id="upiTransferSection" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Recipient UPI ID</label>
+                        <input type="text" id="targetVpa" class="form-input" placeholder="someone@smtbank">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Amount (₹)</label>
+                        <input type="number" id="upiAmount" class="form-input" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">UPI PIN</label>
+                        <input type="password" id="upiPin" class="form-input" maxlength="6"
+                            placeholder="Enter 6 digits">
+                    </div>
+                    <button onclick="handleUpiTransfer()" class="btn-primary-maroon">Pay Securely</button>
+                </div>
+
+                <div id="upiSetupSection" style="display: none;">
+                    <p>NPCI UPI not enabled.</p>
+                    <div class="form-group" style="margin-top: 20px;">
+                        <label class="form-label">Set 6-Digit UPI PIN</label>
+                        <input type="password" id="newUpiPin" class="form-input" maxlength="6"
+                            placeholder="Set 6 digits">
+                    </div>
+                    <button onclick="handleUpiSetup()" class="btn-primary-maroon">Enable UPI</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bank Transfer Page -->
+        <div id="transferPage" class="page-content" style="display: none;">
+            <div class="welcome-section">
+                <h2 class="welcome-title">Bank Transfer</h2>
+                <p style="color: var(--text-grey); margin-bottom: 20px;">Internal SmartBank Transfer</p>
+
+                <div class="form-group">
+                    <label class="form-label">Recipient Account No</label>
+                    <input type="text" id="transferAcc" class="form-input" placeholder="SB000000...">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Amount (₹)</label>
+                    <input type="number" id="transferAmount" class="form-input" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Remarks</label>
+                    <input type="text" id="transferRemarks" class="form-input" placeholder="Rent, Gift, etc.">
+                </div>
+                <button onclick="handleInternalTransfer()" class="btn-primary-maroon">Send Money</button>
+                <button onclick="switchTab('dashboard')" class="btn-secondary" style="margin-top: 10px;">Back to
+                    Home</button>
+            </div>
+        </div>
+
+        <!-- Bill Pay Page (BBPS Mock) -->
+        <div id="billPayPage" class="page-content" style="display: none;">
+            <div class="welcome-section">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;">
+                    <h2 class="welcome-title" id="billPayTitle">Bill Payment</h2>
+                    <div style="font-size: 14px; color: var(--primary-maroon); font-weight: 700;">
+                        <i class="fas fa-circle-notch"></i> Bharat BillPay
+                    </div>
+                </div>
+
+                <div id="billerInputGroup">
+                    <div class="form-group">
+                        <label class="form-label" id="consumerIdLabel">Consumer Number</label>
+                        <input type="text" id="billConsumerId" class="form-input" placeholder="Enter Number">
+                    </div>
+                    <button onclick="fetchMockBill()" class="btn-primary-maroon">Fetch Bill Details</button>
+                </div>
+
+                <div id="billDetailsGroup"
+                    style="display: none; background: #fff; padding: 20px; border-radius: 16px; border: 1px solid #eee; margin-top: 20px;">
+                    <p id="billBillerName" style="font-weight: 700; color: var(--primary-maroon); margin-bottom: 10px;">
+                    </p>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                        <span style="color: var(--text-grey);">Due Date</span>
+                        <span id="billDueDate" style="font-weight: 600;"></span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+                        <span style="color: var(--text-grey);">Balance Due</span>
+                        <span id="billAmountDue" style="font-weight: 700; font-size: 18px;"></span>
+                    </div>
+                    <button onclick="handleBillPayment()" class="btn-primary-maroon">Confirm & Pay</button>
+                </div>
+
+                <button onclick="switchTab('dashboard')" class="btn-secondary" style="margin-top: 20px;">Cancel</button>
+            </div>
+        </div>
+
+        <!-- Apply FD Modal -->
+
+        <!-- Scanner Modal -->
+        <div id="qrScannerModal"
+            style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; flex-direction:column; justify-content:center; align-items:center;">
+            <div
+                style="background: white; padding: 20px; border-radius: 12px; width: 90%; max-width: 400px; text-align: center;">
+                <h3 style="margin-top: 0; color: #8b0000; font-size: 18px; margin-bottom: 15px;">Scan QR Code</h3>
+                <div id="qr-reader" style="width:100%; min-height: 250px;"></div>
+                <button onclick="closeQrScanner()"
+                    style="margin-top: 20px; background: #8b0000; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; width: 100%; cursor: pointer;">Close</button>
+            </div>
+        </div>
+
+
+
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" onclick="switchTab('dashboard')">
+                <i class="fas fa-home"></i>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="#" class="nav-item" onclick="switchTab('profile')">
+                <i class="fas fa-user-circle"></i>
+                <span class="nav-label">My Profile</span>
+            </a>
+            <div class="nav-center">
+                <div class="nav-center-btn" onclick="openQrScanner()">
+                    <i class="fas fa-qrcode"></i>
+                    <span class="nav-label" style="font-size: 8px;">Scan QR</span>
+                </div>
+            </div>
+            <a href="#" class="nav-item" onclick="loadMobileTransactions(); switchTab('history')">
+                <i class="fas fa-history"></i>
+                <span class="nav-label">Transactions</span>
+            </a>
+            <a href="#" class="nav-item" onclick="logMobileActivity('Opened More Tab'); switchTab('more')">
+                <i class="fas fa-ellipsis-h"></i>
+                <span class="nav-label">More</span>
+            </a>
+        </nav>
+
+        <!-- Passcode Setup Modal -->
+        <div id="passcodeModal" class="modal-overlay">
+            <div class="modal-content">
+                <h3 style="margin-bottom: 10px;">Set 4-Digit Passcode</h3>
+                <p style="font-size: 13px; color: var(--text-grey); margin-bottom: 20px;">Use this for faster login on
+                    this device.</p>
+                <div class="form-group">
+                    <input type="password" id="newPasscode" class="form-input" maxlength="4" placeholder="••••"
+                        style="text-align: center; letter-spacing: 15px; font-size: 24px;">
+                </div>
+                <button onclick="savePasscode()" class="btn-primary-maroon">Save Passcode</button>
+                <button onclick="closePasscodeModal()" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+        <!-- Notifications Modal -->
+        <div id="mobileNotifModal" class="modal-overlay"
+            style="z-index: 10001; align-items: flex-start; padding-top: 60px;">
+            <div class="modal-content" style="border-radius: 16px; width: 90%; max-height: 70vh; overflow-y: auto;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3 style="margin: 0;">Notifications</h3>
+                    <button onclick="toggleMobileNotifications()"
+                        style="background:none;border:none;font-size:24px;color:var(--text-muted);">&times;</button>
+                </div>
+                <div id="mobileNotifList" style="text-align: left;">
+                    <p style="text-align:center; color: var(--text-grey);">No new notifications</p>
+                </div>
+            </div>
+        </div>
+
+    </div> <!-- Closing mobile-wrapper -->
+
+    <!-- Scripts -->
+    <script src="api-config.js"></script>
+    <script src="chatbot.js"></script>
+    <script src="face-api.min.js"></script>
+    <script src="face-auth-fixed.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof FaceAuthManager !== 'undefined') {
+                window.faceAuthManager = new FaceAuthManager();
+                window.faceAuthManager.init();
+            }
+        });
+    </script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script src="mobile-logic.js"></script>
+    <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => console.log('ServiceWorker registration successful'))
+                    .catch(err => console.log('ServiceWorker registration failed: ', err));
+            });
+        }
+    </script>
+</body>
+
+</html>

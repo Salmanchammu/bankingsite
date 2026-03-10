@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bank - Sign Up</title>
+    <!-- Modern Premium Authentication CSS -->
+    <link rel="stylesheet" href="modern-auth.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="auth-layout">
+        <!-- Left Side - Signup Form -->
+        <div class="auth-left">
+            <div class="auth-card">
+
+                <!-- Tabbed Header -->
+                <div class="auth-tabs">
+                    <a href="user.html" class="auth-tab">Sign In</a>
+                    <a href="signup.html" class="auth-tab active">Sign Up</a>
+                    <a href="forgot-password.html" class="auth-tab">Password recovery</a>
+                </div>
+
+                <div class="form-container">
+                    <!-- Logo & Greeting -->
+                    <div class="logo-section">
+                        <div class="logo-icon">
+                            <span style="color: var(--text-primary);">SMART</span> <span
+                                style="color: #8E2020;">BANKING</span>
+                        </div>
+                        <h2 class="page-title">Create your account</h2>
+                    </div>
+
+                    <form id="signupForm" class="form-section active-form">
+                        <div class="form-group">
+                            <label for="signupName">Full Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user input-icon"></i>
+                                <input type="text" id="signupName" name="signupName" placeholder="John Doe" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signupUsername">Username</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-at input-icon"></i>
+                                <input type="text" id="signupUsername" name="signupUsername" placeholder="johndoe123"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signupEmail">Email Address</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-envelope input-icon"></i>
+                                <input type="email" id="signupEmail" name="signupEmail" placeholder="john@example.com"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signupPassword">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="signupPassword" name="signupPassword"
+                                    placeholder="••••••••••" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="signupConfirmPassword">Confirm Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-shield-alt input-icon"></i>
+                                <input type="password" id="signupConfirmPassword" name="signupConfirmPassword"
+                                    placeholder="••••••••••" required>
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="agreeTerms" required>
+                                <span class="checkbox-label">I agree to terms and conditions</span>
+                            </label>
+                        </div>
+
+                        <!-- Interactive reCAPTCHA Mock -->
+                        <div class="recaptcha-mock"></div>
+
+                        <button type="submit" class="btn-primary">
+                            Create Account
+                        </button>
+                    </form>
+
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+
+                    <div class="additional-links">
+                        <a href="staff.html" class="link-secondary"><i class="fas fa-user-tie"></i> Staff Portal</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="copyright">
+                <i class="far fa-copyright"></i>
+                <span>2026 Smart Bank Corporation</span>
+            </div>
+
+        </div>
+
+        <!-- Right Side - Branding/Illustration -->
+        <div class="auth-right">
+            <div class="branding-content">
+                <h1 class="branding-title">
+                    Welcome to<br>
+                    <span>Smart Banking</span>
+                </h1>
+
+                <!-- CSS Isometric Illustration -->
+                <div class="iso-illustration">
+                    <!-- The Grid Floor -->
+                    <div class="iso-grid"></div>
+
+                    <!-- The Stand/Dashboard -->
+                    <div class="iso-stand">
+                        <div class="iso-logo">
+                            <span style="color:var(--text-primary)">SMART</span> <span
+                                style="color:#8E2020;">BANKING</span>
+                        </div>
+                        <div class="iso-profile"><i class="far fa-user"></i></div>
+                        <div class="iso-login-dots"></div>
+                        <div class="iso-btn"><i class="fas fa-arrow-right"></i></div>
+                    </div>
+
+                    <!-- Left Shield -->
+                    <div class="iso-shield">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- OTP Verification Modal -->
+        <div id="otpModal" class="modal">
+            <div class="modal-content auth-card otp-glass">
+                <div class="modal-header">
+                    <div class="otp-icon-lpc">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <h2 class="auth-title">Verify Account</h2>
+                    <p class="auth-subtitle">A verification code has been sent to your email. Please check your inbox.
+                    </p>
+                </div>
+
+                <form id="otpForm" class="otp-form-premium">
+                    <input type="hidden" id="otpUsername">
+                    <div class="otp-input-container">
+                        <input type="text" id="otpInput" class="otp-field-main" placeholder="------" maxlength="6"
+                            autocomplete="off" required autofocus>
+                        <div class="otp-input-underline"></div>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-glossy" id="verifyBtn">
+                        <span>CONFIRM & ACTIVATE</span>
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+
+                    <div class="otp-footer">
+                        <span>Didn't receive the code?</span>
+                        <a href="#" id="resendOtp" class="resend-link">Resend Code</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast" id="toast"></div>
+
+        <!-- Scripts -->
+        <script src="device-detector.js"></script>
+        <script src="auth-helper.js"></script>
+        <script src="api-config.js"></script>
+        <script src="signup.js"></script>
+    </div>
+</body>
+
+</html>

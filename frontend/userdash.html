@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bank - User Dashboard</title>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="modern-dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="face-auth-fixed.css">
+    <link rel="stylesheet" href="chatbot.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <h1 class="logo-text">Smart<span class="logo-highlight">Bank</span></h1>
+                </div>
+                <p class="menu-label">Menu</p>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="accounts">
+                    <i class="fas fa-university"></i>
+                    <span>My Accounts</span>
+                </a>
+                <a href="#" class="nav-item" data-page="transactions">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+                <a href="#" class="nav-item" data-page="transfer">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Transfer Money</span>
+                </a>
+                <a href="#" class="nav-item" data-page="upi">
+                    <i class="fas fa-mobile-alt"></i>
+                    <span>UPI Payments</span>
+                </a>
+                <a href="#" class="nav-item" data-page="cards">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Cards</span>
+                </a>
+                <a href="#" class="nav-item" data-page="loans">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Loans</span>
+                </a>
+
+                <p class="menu-label">OTHERS</p>
+                <a href="#" class="nav-item" data-page="support">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" onclick="logout()" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img id="userAvatar" src="" alt="User" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name" id="userName">Loading...</div>
+                        <div class="user-role">Customer</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="top-bar-actions">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <button class="action-btn" onclick="toggleTheme()">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <div style="position: relative;">
+                        <button class="action-btn" id="notificationBtn"
+                            onclick="toggleDropdown('notificationDropdown')">
+                            <i class="fas fa-bell"></i>
+                            <span class="badge" id="notificationCount" style="display: none;">0</span>
+                        </button>
+                        <div id="notificationDropdown" class="dropdown-menu">
+                            <div class="dropdown-header">Notifications</div>
+                            <div class="dropdown-content" id="notificationList">No new notifications</div>
+                        </div>
+                    </div>
+                    <div style="position: relative;">
+                        <img id="topBarAvatar" src="" alt="User" class="user-avatar-small"
+                            onclick="toggleDropdown('profileDropdown')">
+                        <div id="profileDropdown" class="dropdown-menu profile-menu">
+                            <a href="#" class="dropdown-item"
+                                onclick="showPage('settings'); toggleDropdown('profileDropdown');">
+                                <i class="fas fa-cog"></i> Settings
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="#" class="dropdown-item text-danger" onclick="logout()">
+                                <i class="fas fa-sign-out-alt"></i> Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page-content active">
+                <!-- Welcome Section with Date/Time -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h1 style="font-size: 32px; font-weight: 700; margin-bottom: 8px;">Welcome back, <span
+                                    id="welcomeName">User</span>! 👋</h1>
+                            <p style="color: var(--text-secondary); font-size: 14px;" id="currentDateTime">Loading...
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Stats Cards Grid -->
+                <div class="dashboard-grid grid-4" style="margin-bottom: 24px;">
+                    <!-- Total Balance -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon"
+                                style="color: var(--primary-maroon); background: var(--maroon-light);">
+                                <i class="fas fa-wallet"></i>
+                            </div>
+                            <div class="stat-actions">
+                                <button onclick="toggleBalanceVisibility()" class="stat-action-btn"
+                                    title="Toggle Visibility">
+                                    <i id="balanceHideIcon" class="fas fa-eye"></i>
+                                </button>
+                                <button onclick="manualRefreshBalance()" class="stat-action-btn"
+                                    title="Refresh Balance">
+                                    <i id="balanceRefreshIcon" class="fas fa-sync-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="statTotalBalances">₹0</div>
+                        <div class="stat-label">Total Balance</div>
+                        <div class="stat-change text-secondary" style="color: var(--text-secondary);">
+                            <i class="fas fa-university"></i> Across all accounts
+                        </div>
+                    </div>
+
+                    <!-- Total Income -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="color: var(--success); background: rgba(16, 185, 129, 0.1);">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="statTotalIncome">₹0</div>
+                        <div class="stat-label">Total Income</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i> This month
+                        </div>
+                    </div>
+
+                    <!-- Total Spending -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="color: var(--danger); background: rgba(239, 68, 68, 0.1);">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="statTotalSpending">₹0</div>
+                        <div class="stat-label">Total Spending</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-arrow-down"></i> This month
+                        </div>
+                    </div>
+
+                    <!-- Active Loans -->
+                    <div class="stat-card">
+                        <div class="stat-card-header">
+                            <div class="stat-icon" style="color: var(--warning); background: rgba(245, 158, 11, 0.1);">
+                                <i class="fas fa-piggy-bank"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value" id="statActiveLoans">0</div>
+                        <div class="stat-label">Active Loans</div>
+                        <div class="stat-change text-secondary" style="color: var(--text-secondary);">
+                            <i class="fas fa-info-circle"></i> <span id="statLoanApplications">0</span> Applications
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card" style="margin-bottom: 24px;">
+                    <h3 class="card-title" style="margin-bottom: 20px;">Quick Actions</h3>
+                    <div class="dashboard-grid"
+                        style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                        <button onclick="showTransferModal()" class="quick-action-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Transfer Money</span>
+                        </button>
+
+                        <button onclick="showLoanModal()" class="quick-action-btn">
+                            <i class="fas fa-hand-holding-usd"></i>
+                            <span>Apply for Loan</span>
+                        </button>
+
+                        <button onclick="showPage('cards')" class="quick-action-btn">
+                            <i class="fas fa-credit-card"></i>
+                            <span>Request Card</span>
+                        </button>
+
+                        <button onclick="showPage('transactions')" class="quick-action-btn">
+                            <i class="fas fa-history"></i>
+                            <span>View Transactions</span>
+                        </button>
+
+                        <button onclick="showPage('accounts')" class="quick-action-btn">
+                            <i class="fas fa-university"></i>
+                            <span>My Accounts</span>
+                        </button>
+
+                        <button onclick="showMutualFundModal()" class="quick-action-btn">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Mutual Fund</span>
+                        </button>
+
+                        <button onclick="showLifeInsuranceModal()" class="quick-action-btn">
+                            <i class="fas fa-umbrella"></i>
+                            <span>Life Insurance</span>
+                        </button>
+
+                        <button onclick="showGoldLoanModal()" class="quick-action-btn">
+                            <i class="fas fa-coins"></i>
+                            <span>Gold Loan</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3 class="card-title">Recent Transactions</h3>
+                        </div>
+                        <div class="card-actions">
+                            <button class="icon-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                            <button class="icon-btn">
+                                <i class="fas fa-filter"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="transactions-list" id="recentTransactions">
+                        <!-- Transactions will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Invoice Activity -->
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Invoice Activity</h3>
+                    </div>
+                    <div class="invoice-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search..." id="invoiceSearch">
+                        </div>
+                        <button class="filter-btn">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                    <table class="data-table" id="invoiceTable">
+                        <thead>
+                            <tr>
+                                <th>DATE & TIME</th>
+                                <th>INVOICE MEMBER</th>
+                                <th>RECEIPT</th>
+                                <th>ACTION</th>
+                                <th>AMOUNT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="invoiceTableBody">
+                            <!-- Invoice data will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Transactions Page -->
+            <div id="transactions" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All Transactions</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showTransferModal()">
+                            <i class="fas fa-plus"></i>
+                            New Transfer
+                        </button>
+                    </div>
+                    <div class="invoice-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search transactions..." id="transactionSearch">
+                        </div>
+                        <button class="filter-btn">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                    <div id="allTransactionsList"></div>
+                </div>
+            </div>
+
+            <!-- Contacts Page -->
+            <div id="contacts" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">My Contacts</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showAddContactModal()">
+                            <i class="fas fa-user-plus"></i>
+                            Add Contact
+                        </button>
+                    </div>
+                    <div id="contactsList"></div>
+                </div>
+            </div>
+
+            <!-- Cards Page -->
+            <div id="cards" class="page-content">
+                <!-- Card Application Options -->
+                <div class="dashboard-grid grid-2" style="margin-bottom: 24px;">
+
+                    <!-- Debit Card -->
+                    <button onclick="applyForCard('debit')"
+                        style="background:linear-gradient(145deg,#800000,#4d0000);border:none;border-radius:20px;padding:30px 24px;cursor:pointer;display:flex;flex-direction:row;align-items:center;gap:20px;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);box-shadow:0 6px 20px rgba(128,0,0,0.25);color:white;text-align:left;position:relative;overflow:hidden;"
+                        onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 15px 35px rgba(128,0,0,0.4)';"
+                        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 6px 20px rgba(128,0,0,0.25)';">
+                        <!-- Background Pattern -->
+                        <div
+                            style="position:absolute;top:-20px;right:-20px;width:120px;height:120px;background:rgba(255,255,255,0.05);border-radius:50%;">
+                        </div>
+
+                        <div
+                            style="width:64px;height:64px;background:rgba(255,255,255,0.15);border-radius:18px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);flex-shrink:0;">
+                            <i class="fas fa-credit-card" style="font-size:28px;color:white;"></i>
+                        </div>
+                        <div style="flex-grow:1;">
+                            <h4 style="font-weight:700;font-size:18px;margin-bottom:8px;color:white;">Apply for Debit
+                                Card</h4>
+                            <div style="font-size:13px;opacity:0.85;line-height:1.6;">
+                                <div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-check-circle"
+                                        style="font-size:10px;"></i> Free annual charges</div>
+                                <div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-check-circle"
+                                        style="font-size:10px;"></i> Instant activation</div>
+                                <div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-check-circle"
+                                        style="font-size:10px;"></i> Global acceptance</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="opacity:0.5;font-size:18px;"></i>
+                    </button>
+
+                    <!-- Credit Card -->
+                    <button onclick="applyForCard('credit')"
+                        style="background:linear-gradient(145deg,#660000,#330000);border:none;border-radius:20px;padding:30px 24px;cursor:pointer;display:flex;flex-direction:row;align-items:center;gap:20px;transition:all 0.3s cubic-bezier(0.4, 0, 0.2, 1);box-shadow:0 6px 20px rgba(102,0,0,0.25);color:white;text-align:left;position:relative;overflow:hidden;"
+                        onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 15px 35px rgba(102,0,0,0.4)';"
+                        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 6px 20px rgba(102,0,0,0.25)';">
+                        <!-- Background Pattern -->
+                        <div
+                            style="position:absolute;bottom:-30px;right:20px;width:100px;height:100px;background:rgba(255,255,255,0.03);border-radius:50%;">
+                        </div>
+
+                        <div
+                            style="width:64px;height:64px;background:rgba(255,255,255,0.15);border-radius:18px;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);flex-shrink:0;">
+                            <i class="fas fa-credit-card" style="font-size:28px;color:white;"></i>
+                        </div>
+                        <div style="flex-grow:1;">
+                            <h4 style="font-weight:700;font-size:18px;margin-bottom:8px;color:white;">Apply for Credit
+                                Card</h4>
+                            <div style="font-size:13px;opacity:0.85;line-height:1.6;">
+                                <div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-check-circle"
+                                        style="font-size:10px;"></i> Up to 50 days credit</div>
+                                <div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-check-circle"
+                                        style="font-size:10px;"></i> Reward points</div>
+                                <div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-check-circle"
+                                        style="font-size:10px;"></i> Cashback offers</div>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="opacity:0.5;font-size:18px;"></i>
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">My Cards</h3>
+                    </div>
+                    <div id="cardsList"></div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Card Requests</h3>
+                    </div>
+                    <div id="cardRequestsList"></div>
+                </div>
+            </div>
+
+            <!-- Loans Page -->
+            <div id="loans" class="page-content">
+                <!-- Loan Types -->
+                <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;">
+
+                    <!-- Personal Loan -->
+                    <button onclick="applyForLoan('personal')"
+                        style="background:linear-gradient(145deg,#8b0000,#5a0000);border:none;border-radius:18px;padding:24px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;transition:all 0.25s ease;box-shadow:0 4px 15px rgba(139,0,0,0.35);color:white;text-align:center;"
+                        onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 30px rgba(139,0,0,0.5)'"
+                        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(139,0,0,0.35)'">
+                        <div
+                            style="width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+                            <i class="fas fa-user" style="font-size:22px;color:white;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Personal Loan</div>
+                            <div style="font-size:11px;opacity:0.85;margin-bottom:6px;">Up to ₹5,00,000</div>
+                            <span
+                                style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;">10.50%
+                                p.a.</span>
+                        </div>
+                    </button>
+
+                    <!-- Home Loan -->
+                    <button onclick="applyForLoan('home')"
+                        style="background:linear-gradient(145deg,#a01010,#6b0000);border:none;border-radius:18px;padding:24px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;transition:all 0.25s ease;box-shadow:0 4px 15px rgba(160,16,16,0.35);color:white;text-align:center;"
+                        onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 30px rgba(160,16,16,0.5)'"
+                        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(160,16,16,0.35)'">
+                        <div
+                            style="width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+                            <i class="fas fa-home" style="font-size:22px;color:white;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Home Loan</div>
+                            <div style="font-size:11px;opacity:0.85;margin-bottom:6px;">Up to ₹50,00,000</div>
+                            <span
+                                style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;">8.75%
+                                p.a.</span>
+                        </div>
+                    </button>
+
+                    <!-- Vehicle Loan -->
+                    <button onclick="applyForLoan('vehicle')"
+                        style="background:linear-gradient(145deg,#7a0000,#4a0000);border:none;border-radius:18px;padding:24px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;transition:all 0.25s ease;box-shadow:0 4px 15px rgba(122,0,0,0.35);color:white;text-align:center;"
+                        onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 30px rgba(122,0,0,0.5)'"
+                        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(122,0,0,0.35)'">
+                        <div
+                            style="width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+                            <i class="fas fa-car" style="font-size:22px;color:white;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Vehicle Loan</div>
+                            <div style="font-size:11px;opacity:0.85;margin-bottom:6px;">Up to ₹10,00,000</div>
+                            <span
+                                style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;">9.25%
+                                p.a.</span>
+                        </div>
+                    </button>
+
+                    <!-- Education Loan -->
+                    <button onclick="applyForLoan('education')"
+                        style="background:linear-gradient(145deg,#b01c1c,#7a0000);border:none;border-radius:18px;padding:24px 16px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:12px;transition:all 0.25s ease;box-shadow:0 4px 15px rgba(176,28,28,0.35);color:white;text-align:center;"
+                        onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 30px rgba(176,28,28,0.5)'"
+                        onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 15px rgba(176,28,28,0.35)'">
+                        <div
+                            style="width:52px;height:52px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
+                            <i class="fas fa-graduation-cap" style="font-size:22px;color:white;"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight:700;font-size:15px;margin-bottom:4px;">Education Loan</div>
+                            <div style="font-size:11px;opacity:0.85;margin-bottom:6px;">Up to ₹20,00,000</div>
+                            <span
+                                style="background:rgba(255,255,255,0.25);padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600;">8.00%
+                                p.a.</span>
+                        </div>
+                    </button>
+
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">My Loan Applications</h3>
+                    </div>
+                    <div id="loansList"></div>
+                </div>
+            </div>
+
+            <!-- Wallet Page -->
+            <div id="wallet" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Digital Wallet</h3>
+                    </div>
+                    <div id="walletContent"></div>
+                </div>
+            </div>
+
+            <!-- My Accounts Page -->
+            <div id="accounts" class="page-content">
+                <!-- Quick Account Actions -->
+                <div class="dashboard-grid grid-3" style="margin-bottom: 24px;">
+                    <button onclick="openNewAccount('savings')" class="quick-action-btn">
+                        <i class="fas fa-piggy-bank"></i>
+                        <span style="font-weight: 600; font-size: 15px;">Open Savings Account</span>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Earn interest on
+                            deposits</div>
+                    </button>
+
+                    <button onclick="openNewAccount('current')" class="quick-action-btn">
+                        <i class="fas fa-briefcase"></i>
+                        <span style="font-weight: 600; font-size: 15px;">Open Current Account</span>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">For business
+                            transactions</div>
+                    </button>
+
+                    <button onclick="openNewAccount('salary')" class="quick-action-btn">
+                        <i class="fas fa-wallet"></i>
+                        <span style="font-weight: 600; font-size: 15px;">Open Salary Account</span>
+                        <div style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Employee salary
+                            account</div>
+                    </button>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">My Accounts</h3>
+                    </div>
+                    <div id="accountsList"></div>
+                </div>
+            </div>
+
+            <!-- Transfer Money Page -->
+            <div id="transfer" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Transfer Money</h3>
+                    </div>
+                    <div id="transferContent"></div>
+                </div>
+            </div>
+
+            <!-- UPI Payments Page -->
+            <div id="upi" class="page-content">
+                <div class="card" id="upiSetupCard" style="display: none; margin-bottom: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Setup NPCI UPI Sandbox</h3>
+                    </div>
+                    <div class="card-body">
+                        <div style="text-align: center; padding: 20px;">
+                            <div
+                                style="width: 80px; height: 80px; background: var(--primary-light); color: var(--primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                                <i class="fas fa-mobile-alt" style="font-size: 40px;"></i>
+                            </div>
+                            <h2>Quick & Secure UPI Payments</h2>
+                            <p style="color: var(--text-secondary); margin-bottom: 24px;">Register your SmartBank VPA
+                                and start sending money instantly using NPCI UPI Sandbox.</p>
+                            <form id="upiSetupForm" onsubmit="setupUPI(event)"
+                                style="max-width: 400px; margin: 0 auto; text-align: left;">
+                                <div class="form-group">
+                                    <label class="form-label">Desired UPI ID</label>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <input type="text" id="upiUsername" class="form-input" readonly
+                                            style="background: #f8fafc;">
+                                        <span style="font-weight: 600; color: var(--primary);">@smtbank</span>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="upiPin">Set 6-Digit UPI PIN</label>
+                                    <input type="password" id="upiPin" class="form-input" placeholder="Enter 6 digits"
+                                        maxlength="6" pattern="[0-9]{6}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="upiPinConfirm">Confirm UPI PIN</label>
+                                    <input type="password" id="upiPinConfirm" class="form-input"
+                                        placeholder="Confirm 6 digits" maxlength="6" pattern="[0-9]{6}" required>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-block">
+                                    <i class="fas fa-check-circle"></i> Enable UPI
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="upiMainContent" style="display: none;">
+                    <div class="dashboard-grid grid-2" style="margin-bottom: 24px;">
+                        <div class="card" id="balanceCardContainer"
+                            style="background: linear-gradient(135deg, var(--card-bg) 0%, #f8fafc 100%); position: relative; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
+                            <div
+                                style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, rgba(59,130,246,0.1) 0%, transparent 70%); border-radius: 50%;">
+                            </div>
+                            <div class="card-header">
+                                <h3 class="card-title" id="balanceLabel"
+                                    style="font-size: 16px; color: var(--text-secondary);"><i class="fas fa-wallet"
+                                        style="margin-right: 8px; color: var(--primary-blue);"></i>Total Balance</h3>
+                            </div>
+                            <div>
+                                <div id="statTotalBalances"
+                                    style="font-size: 36px; font-weight: 800; color: var(--text-primary); margin: 12px 0; letter-spacing: -0.5px;">
+                                    ₹0.00</div>
+                                <div
+                                    style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px;">
+                                    <span id="balanceSubLabel"
+                                        style="font-size: 13px; color: #10b981; background: #d1fae5; padding: 4px 10px; border-radius: 20px; font-weight: 600;"><i
+                                            class="fas fa-arrow-up" style="margin-right: 4px;"></i>Across all
+                                        accounts</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card">
+                            <h3 class="card-title">Quick UPI Actions</h3>
+                            <div style="display: flex; gap: 12px; margin-top: 16px;">
+                                <button onclick="showUpiTransfer('internal')" class="btn btn-outline" style="flex: 1;">
+                                    <i class="fas fa-user-friends"></i> Internal VPA
+                                </button>
+                                <button onclick="showUpiTransfer('external')" class="btn btn-outline" style="flex: 1;">
+                                    <i class="fas fa-globe"></i> External NPCI
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">UPI Transfer</h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="upiTransferForm" onsubmit="submitUpiTransfer(event)" style="max-width: 500px;">
+                                <div class="form-group">
+                                    <label class="form-label">Recipient UPI ID (VPA)</label>
+                                    <div class="search-box" style="padding-left: 0;">
+                                        <input type="text" id="targetVpa" class="form-input"
+                                            placeholder="example@smtbank or example@axis" required>
+                                    </div>
+                                    <small style="color: var(--text-secondary);">Sandbox accepts @smtbank, @axis,
+                                        @okicici, @upi, @paytm</small>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Amount (₹)</label>
+                                    <input type="number" id="upiAmount" class="form-input" placeholder="0.00" min="1"
+                                        step="0.01"
+                                        onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46"
+                                        oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">UPI PIN</label>
+                                    <input type="password" id="upiTransferPin" class="form-input"
+                                        placeholder="6-digit PIN" maxlength="6" required>
+                                </div>
+                                <div style="margin-top: 24px;">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane"></i> Pay Securely
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Support Page -->
+            <div id="support" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Support Center</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showNewSupportRequestModal()">
+                            <i class="fas fa-plus"></i>
+                            New Request
+                        </button>
+                    </div>
+
+                    <!-- Support Stats -->
+                    <div class="dashboard-grid grid-3" style="margin-bottom: 24px;">
+                        <div class="card" style="background: linear-gradient(135deg, #10b981, #059669); color: white;">
+                            <div style="text-align: center;">
+                                <i class="fas fa-ticket-alt" style="font-size: 32px; margin-bottom: 12px;"></i>
+                                <h2 style="font-size: 36px; font-weight: 700; margin-bottom: 8px;"
+                                    id="supportOpenTickets">0</h2>
+                                <p style="font-size: 14px; opacity: 0.9;">Open Tickets</p>
+                            </div>
+                        </div>
+                        <div class="card" style="background: linear-gradient(135deg, #f59e0b, #d97706); color: white;">
+                            <div style="text-align: center;">
+                                <i class="fas fa-clock" style="font-size: 32px; margin-bottom: 12px;"></i>
+                                <h2 style="font-size: 36px; font-weight: 700; margin-bottom: 8px;"
+                                    id="supportPendingTickets">0</h2>
+                                <p style="font-size: 14px; opacity: 0.9;">Pending Response</p>
+                            </div>
+                        </div>
+                        <div class="card" style="background: linear-gradient(135deg, #06b6d4, #0891b2); color: white;">
+                            <div style="text-align: center;">
+                                <i class="fas fa-check-circle" style="font-size: 32px; margin-bottom: 12px;"></i>
+                                <h2 style="font-size: 36px; font-weight: 700; margin-bottom: 8px;"
+                                    id="supportResolvedTickets">0</h2>
+                                <p style="font-size: 14px; opacity: 0.9;">Resolved</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Support Requests -->
+                    <h4 style="margin-bottom: 16px; font-weight: 600;">My Support Requests</h4>
+                    <div id="supportRequestsList">
+                        <!-- Support requests will be loaded here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settings" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Account Settings</h3>
+                    </div>
+                    <div id="settingsContent"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div id="transferModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Transfer Money</h3>
+                <button class="modal-close" onclick="closeModal('transferModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="transferModalBody"></div>
+        </div>
+    </div>
+
+    <div id="depositModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Deposit Money</h3>
+                <button class="modal-close" onclick="closeModal('depositModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="depositModalBody"></div>
+        </div>
+    </div>
+
+    <div id="loanModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Apply for Loan</h3>
+                <button class="modal-close" onclick="closeModal('loanModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="loanModalBody"></div>
+        </div>
+    </div>
+
+    <!-- Account Opening Modal -->
+    <div id="accountOpeningModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="accountModalTitle">Open New Account</h3>
+                <button class="modal-close" onclick="closeModal('accountOpeningModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="accountOpeningForm" onsubmit="submitAccountOpening(event)">
+                    <input type="hidden" id="accountType" value="">
+
+                    <div class="form-group">
+                        <label class="form-label">Account Type</label>
+                        <input type="text" id="accountTypeDisplay" class="form-input" readonly>
+                    </div>
+
+                    <div class="form-group" id="taxIdGroup" style="display: none;">
+                        <label class="form-label">Tax ID (For Current Account)</label>
+                        <input type="text" id="accountTaxId" class="form-input"
+                            placeholder="e.g. GSTIN or Business Tax ID">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" id="accountHolderName" class="form-input" placeholder="As per ID proof"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Mobile Number</label>
+                        <input type="tel" id="accountMobile" class="form-input" placeholder="10-digit mobile number"
+                            pattern="[0-9]{10}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" id="accountEmail" class="form-input" placeholder="your.email@example.com"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">PAN Number</label>
+                        <input type="text" id="accountPAN" class="form-input" placeholder="ABCDE1234F"
+                            pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Aadhar Number</label>
+                        <input type="text" id="accountAadhar" class="form-input" placeholder="12-digit Aadhar number"
+                            pattern="[0-9]{12}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Initial Deposit Amount (₹) <span
+                                style="font-size:11px;color:#9ca3af;font-weight:400;">(Optional)</span></label>
+                        <input type="number" id="initialDeposit" class="form-input"
+                            placeholder="Enter amount (optional)"
+                            onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || event.charCode == 46"
+                            oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);">
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('accountOpeningModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i>
+                            Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Application Modal -->
+    <div id="loanApplicationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="loanModalTitle">Apply for Loan</h3>
+                <button class="modal-close" onclick="closeModal('loanApplicationModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="loanApplicationForm" onsubmit="submitLoanApplication(event)">
+                    <input type="hidden" id="loanType" value="">
+
+                    <div class="form-group">
+                        <label class="form-label">Loan Type</label>
+                        <input type="text" id="loanTypeDisplay" class="form-input" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Loan Amount (₹)</label>
+                        <input type="number" id="loanAmount" class="form-input" placeholder="Enter amount" min="10000"
+                            onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Loan Tenure (Months)</label>
+                        <select id="loanTenure" class="form-select" required>
+                            <option value="">Select tenure...</option>
+                            <option value="12">12 months (1 year)</option>
+                            <option value="24">24 months (2 years)</option>
+                            <option value="36">36 months (3 years)</option>
+                            <option value="48">48 months (4 years)</option>
+                            <option value="60">60 months (5 years)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Disbursement Account</label>
+                        <select id="loanAccount" class="form-select" required>
+                            <option value="">Select account...</option>
+                        </select>
+                        <small style="color: var(--text-secondary); margin-top: 4px; display: block;">Approved funds
+                            will be deposited here.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Monthly Income (₹)</label>
+                        <input type="number" id="monthlyIncome" class="form-input" placeholder="Your monthly income"
+                            min="10000" onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                            oninput="if(this.value.length > 10) this.value = this.value.slice(0, 10);" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Employment Type</label>
+                        <select id="employmentType" class="form-select" required>
+                            <option value="">Select...</option>
+                            <option value="salaried">Salaried</option>
+                            <option value="self-employed">Self Employed</option>
+                            <option value="business">Business Owner</option>
+                            <option value="professional">Professional</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Purpose of Loan</label>
+                        <textarea id="loanPurpose" class="form-textarea" rows="3"
+                            placeholder="Brief description of loan purpose" required></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('loanApplicationModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i>
+                            Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Application Modal -->
+    <div id="cardApplicationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="cardModalTitle">Apply for Card</h3>
+                <button class="modal-close" onclick="closeModal('cardApplicationModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="cardApplicationForm" onsubmit="submitCardApplication(event)">
+                    <input type="hidden" id="cardType" value="">
+
+                    <div class="form-group">
+                        <label class="form-label">Card Type</label>
+                        <input type="text" id="cardTypeDisplay" class="form-input" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Cardholder Name</label>
+                        <input type="text" id="cardholderName" class="form-input"
+                            placeholder="Name as it should appear on card" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Linked Account</label>
+                        <select id="linkedAccount" class="form-select" required>
+                            <option value="">Select account...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="creditLimitGroup" style="display: none;">
+                        <label class="form-label">Requested Credit Limit (₹)</label>
+                        <select id="creditLimit" class="form-select">
+                            <option value="25000">₹25,000</option>
+                            <option value="50000">₹50,000</option>
+                            <option value="100000">₹1,00,000</option>
+                            <option value="200000">₹2,00,000</option>
+                            <option value="500000">₹5,00,000</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Delivery Address</label>
+                        <textarea id="deliveryAddress" class="form-textarea" rows="3"
+                            placeholder="Enter complete address for card delivery" required></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('cardApplicationModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i>
+                            Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Support Request Modal -->
+    <div id="supportRequestModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">New Support Request</h3>
+                <button class="modal-close" onclick="closeModal('supportRequestModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="supportRequestForm" onsubmit="submitSupportRequest(event)">
+                    <div class="form-group">
+                        <label class="form-label">Request Type</label>
+                        <select id="supportType" class="form-select" required>
+                            <option value="">Select type...</option>
+                            <option value="account">Account Issue</option>
+                            <option value="transaction">Transaction Problem</option>
+                            <option value="card">Card Related</option>
+                            <option value="loan">Loan Inquiry</option>
+                            <option value="technical">Technical Support</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Priority</label>
+                        <select id="supportPriority" class="form-select" required>
+                            <option value="low">Low - General Question</option>
+                            <option value="medium" selected>Medium - Need Help</option>
+                            <option value="high">High - Urgent Issue</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        <input type="text" id="supportSubject" class="form-input"
+                            placeholder="Brief description of your issue" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea id="supportMessage" class="form-textarea" rows="5"
+                            placeholder="Please describe your issue in detail..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Assign to Staff (Optional)</label>
+                        <select id="assignStaff" class="form-select">
+                            <option value="">Auto-assign to available staff</option>
+                            <option value="staff001">Staff - Customer Service</option>
+                            <option value="staff002">Staff - Technical Support</option>
+                            <option value="staff003">Staff - Loan Department</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('supportRequestModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane"></i>
+                            Submit Request
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Face Recognition Modal -->
+    <div id="faceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Face Recognition</h3>
+                <button class="modal-close" onclick="closeModal('faceModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="faceModalBody"></div>
+        </div>
+    </div>
+    <!-- Mutual Fund Modal -->
+    <div id="mfModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Invest in Mutual Funds</h3>
+                <span class="close-modal" onclick="closeModal('mfModal')"
+                    style="cursor:pointer; font-size:24px;">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; color: var(--text-secondary);">Select a top-performing Mutual Fund to
+                    invest your savings.</p>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- MF 1 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0 0 5px 0;">Alpha Growth Fund</h4>
+                            <p style="margin: 0; font-size: 14px; color: var(--text-secondary);">Min Investment: ₹5,000
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span
+                                style="display: block; color: var(--success); font-weight: bold; font-size: 18px;">+18%
+                                p.a.</span>
+                            <button class="btn btn-primary" style="padding: 5px 15px; font-size: 14px; margin-top: 5px;"
+                                onclick="showApplicationModal('Alpha Growth Fund')">Invest</button>
+                        </div>
+                    </div>
+                    <!-- MF 2 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0 0 5px 0;">Smart Wealth Builder</h4>
+                            <p style="margin: 0; font-size: 14px; color: var(--text-secondary);">Min Investment: ₹2,000
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span
+                                style="display: block; color: var(--success); font-weight: bold; font-size: 18px;">+18%
+                                p.a.</span>
+                            <button class="btn btn-primary" style="padding: 5px 15px; font-size: 14px; margin-top: 5px;"
+                                onclick="showApplicationModal('Smart Wealth Builder')">Invest</button>
+                        </div>
+                    </div>
+                    <!-- MF 3 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0 0 5px 0;">Secure Future Flexi-Cap</h4>
+                            <p style="margin: 0; font-size: 14px; color: var(--text-secondary);">Min Investment: ₹5,000
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span
+                                style="display: block; color: var(--success); font-weight: bold; font-size: 18px;">+18%
+                                p.a.</span>
+                            <button class="btn btn-primary" style="padding: 5px 15px; font-size: 14px; margin-top: 5px;"
+                                onclick="showApplicationModal('Secure Future Flexi-Cap')">Invest</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Life Insurance Modal -->
+    <div id="insuranceModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Life Insurance Policies</h3>
+                <span class="close-modal" onclick="closeModal('insuranceModal')"
+                    style="cursor:pointer; font-size:24px;">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; color: var(--text-secondary);">Secure your family's future with our
+                    trusted insurance partners.</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <!-- Policy 1 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center;">
+                        <i class="fas fa-shield-alt"
+                            style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <h4 style="margin: 0 0 5px 0;">Term Protect</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">High cover at low
+                            premiums.</p>
+                        <button class="btn btn-primary" style="width: 100%;"
+                            onclick="showApplicationModal('Term Protect')">Apply</button>
+                    </div>
+                    <!-- Policy 2 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center;">
+                        <i class="fas fa-heartbeat"
+                            style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <h4 style="margin: 0 0 5px 0;">Health Plus</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">Comprehensive
+                            medical cover.</p>
+                        <button class="btn btn-primary" style="width: 100%;"
+                            onclick="showApplicationModal('Health Plus')">Apply</button>
+                    </div>
+                    <!-- Policy 3 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center;">
+                        <i class="fas fa-child"
+                            style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <h4 style="margin: 0 0 5px 0;">Child Saver</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">Secure their
+                            education.</p>
+                        <button class="btn btn-primary" style="width: 100%;"
+                            onclick="showApplicationModal('Child Saver')">Apply</button>
+                    </div>
+                    <!-- Policy 4 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center;">
+                        <i class="fas fa-user-clock"
+                            style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <h4 style="margin: 0 0 5px 0;">Retire Easy</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">Guaranteed
+                            pension plan.</p>
+                        <button class="btn btn-primary" style="width: 100%;"
+                            onclick="showApplicationModal('Retire Easy')">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gold Loan Modal -->
+    <div id="goldLoanModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Gold Loan</h2>
+                <button class="close-btn" onclick="closeGoldLoanModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Unlock the value of your gold with our
+                    instant gold loans.</p>
+                <div class="dashboard-grid grid-1" style="gap: 15px;">
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <i class="fas fa-coins" style="font-size: 32px; color: var(--primary);"></i>
+                            <div>
+                                <h4 style="margin: 0 0 5px 0;">Instant Gold Loan</h4>
+                                <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">8% p.a. • Minimal
+                                    Documentation</p>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary"
+                            onclick="showApplicationModal('Instant Gold Loan')">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Form Modal -->
+    <div id="applicationFormModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Application Form</h2>
+                <button class="close-btn" onclick="closeApplicationModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p style="color: var(--text-secondary); margin-bottom: 20px;">Complete your application for <strong
+                        id="applicationProductName" class="text-primary"></strong>.</p>
+
+                <div class="form-group">
+                    <label class="form-label">Select Linked Account</label>
+                    <select id="applicationAccount" class="form-input" required></select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Initial Amount (₹)</label>
+                    <input type="number" id="applicationAmount" class="form-input" placeholder="Enter amount" required>
+                </div>
+
+                <div class="form-group" id="tenureGroup" style="display: none;">
+                    <label class="form-label">Tenure (Months)</label>
+                    <select id="applicationTenure" class="form-input">
+                        <option value="6">6 Months</option>
+                        <option value="12" selected>12 Months</option>
+                        <option value="24">24 Months</option>
+                        <option value="36">36 Months</option>
+                        <option value="48">48 Months</option>
+                        <option value="60">60 Months</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Aadhaar Number (12 Digits)</label>
+                    <input type="text" id="applicationAadhaar" class="form-input" placeholder="1234 5678 9012"
+                        maxlength="14" required style="letter-spacing: 1px;">
+                </div>
+
+                <div
+                    style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid var(--danger); padding: 12px; margin-bottom: 24px; border-radius: 4px; font-size: 13px; color: var(--danger);">
+                    By clicking submit, you authorize Smart Bank to process this application.
+                </div>
+
+                <button class="btn btn-primary" style="width: 100%;" onclick="submitFinancialApplication()">Submit
+                    Application</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loan Repayment Modal -->
+    <div id="loanRepayModal" class="modal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Loan Repayment</h2>
+                <button class="close-btn" onclick="closeLoanRepayModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="repayLoanInfo" style="color: var(--text-secondary); margin-bottom: 20px;"></p>
+                <input type="hidden" id="repayLoanId">
+
+                <div class="form-group">
+                    <label class="form-label">Payment Mode</label>
+                    <select id="repayMode" class="form-input" onchange="toggleRepayUI()">
+                        <option value="account">Direct from Bank Account</option>
+                        <option value="upi">UPI ID</option>
+                        <option value="scanner">Scan QR Code</option>
+                    </select>
+                </div>
+
+                <div id="repaySourceGroup" class="form-group">
+                    <label class="form-label">Select Source Account</label>
+                    <select id="repaySourceAccount" class="form-input"></select>
+                </div>
+
+                <div id="repayUPIGroup" class="form-group" style="display: none;">
+                    <label class="form-label">UPI ID</label>
+                    <input type="text" id="repayUPIId" class="form-input" placeholder="e.g. user@okaxis">
+                </div>
+
+                <div id="repayScannerGroup" class="form-group" style="display: none; text-align: center;">
+                    <label class="form-label">Scan to Pay</label>
+                    <div
+                        style="background: white; padding: 10px; display: inline-block; border-radius: 8px; margin-top: 5px;">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=SMARTBANK-LOAN-PAY"
+                            alt="QR Code" style="width: 150px; height: 150px;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Repayment Type</label>
+                    <select id="repayType" class="form-input" onchange="updateRepayAmount()">
+                        <option value="custom">Custom Amount</option>
+                        <option value="emi">Monthly Tenure (EMI x Months)</option>
+                        <option value="full">Full Settlement</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="display: none;">
+                    <label class="form-label">Number of Months</label>
+                    <input type="number" id="repayMonths" class="form-input" value="1" min="1"
+                        oninput="updateRepayAmount()">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Repayment Amount (₹)</label>
+                    <input type="number" id="repayAmount" class="form-input" placeholder="Enter amount" required>
+                </div>
+
+                <div
+                    style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid var(--success); padding: 12px; margin-bottom: 24px; border-radius: 4px; font-size: 13px; color: var(--success);">
+                    Repayment will be instantly deducted from your bank account and applied to your loan.
+                </div>
+
+                <button class="btn btn-primary" id="btnConfirmRepay" style="width: 100%;"
+                    onclick="submitLoanRepayment()">Confirm Repayment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div id="chatbot-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 1000;"></div>
+
+    <script src="api-config.js"></script>
+    <script src="chatbot.js"></script>
+    <script src="face-api.min.js"></script>
+    <script src="face-auth-fixed.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof FaceAuthManager !== 'undefined') {
+                window.faceAuthManager = new FaceAuthManager();
+                window.faceAuthManager.init();
+            }
+        });
+    </script>
+    <script src="userdash.js"></script>
+</body>
+
+</html>

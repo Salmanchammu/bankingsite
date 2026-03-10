@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bank - Staff/Admin Login</title>
+    <link rel="stylesheet" href="modern-auth.css">
+    <link rel="stylesheet" href="face-auth-fixed.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="auth-layout">
+        <!-- Left Side - Login Form -->
+        <div class="auth-left">
+            <div class="auth-card">
+
+                <!-- Tabbed Header (Acting as Role Toggle) -->
+                <div class="auth-tabs">
+                    <button type="button" class="auth-tab active" onclick="selectRole('staff')" id="staffRoleBtn"
+                        style="border-radius: 20px 0 0 0;">Staff Login</button>
+                    <button type="button" class="auth-tab" onclick="selectRole('admin')" id="adminRoleBtn"
+                        style="border-radius: 0 20px 0 0;">Admin Login</button>
+                </div>
+
+                <div class="form-container">
+                    <!-- Logo & Greeting -->
+                    <div class="logo-section">
+                        <div class="logo-icon">
+                            <span style="color: var(--text-primary);">SMART</span> <span
+                                style="color: #8E2020;">BANKING</span>
+                        </div>
+                        <h2 class="page-title">Management Portal</h2>
+                    </div>
+
+                    <!-- Staff Login Form -->
+                    <form id="staffForm" class="form-section active-form">
+                        <div class="form-group">
+                            <label for="staffId">Staff ID</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-id-badge input-icon"></i>
+                                <input type="text" id="staffId" placeholder="Enter your staff ID" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="staffPassword">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="staffPassword" placeholder="••••••••••" required>
+                                <i class="fas fa-eye toggle-password" onclick="togglePassword('staffPassword')"
+                                    style="position: absolute; right: 16px; color: #94a3b8; cursor: pointer;"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="staffRemember">
+                                <span class="checkbox-label">Remember me</span>
+                            </label>
+                        </div>
+
+                        <!-- Interactive reCAPTCHA Mock (Staff) -->
+                        <div class="recaptcha-mock"></div>
+
+                        <button type="submit" class="btn-primary">
+                            Sign In as Staff
+                        </button>
+
+                        <button type="button" onclick="faceAuthManager.openLoginModal('staff')" class="btn-face-login">
+                            <img src="face-scan-icon.png" class="face-scan-img" alt="Face Scan"
+                                style="height: 20px; width: auto; filter: grayscale(1);"> Face Login
+                        </button>
+                    </form>
+
+                    <!-- Admin Login Form -->
+                    <form id="adminForm" class="form-section" style="display: none;">
+                        <div class="form-group">
+                            <label for="adminUsername">Admin Username</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user-shield input-icon"></i>
+                                <input type="text" id="adminUsername" placeholder="Enter admin username" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="adminPassword">Password</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-lock input-icon"></i>
+                                <input type="password" id="adminPassword" placeholder="••••••••••" required>
+                                <i class="fas fa-eye toggle-password" onclick="togglePassword('adminPassword')"
+                                    style="position: absolute; right: 16px; color: #94a3b8; cursor: pointer;"></i>
+                            </div>
+                        </div>
+
+                        <div class="form-options">
+                            <label class="checkbox-container">
+                                <input type="checkbox" id="adminRemember">
+                                <span class="checkbox-label">Remember me</span>
+                            </label>
+                        </div>
+
+                        <!-- Interactive reCAPTCHA Mock (Admin) -->
+                        <div class="recaptcha-mock"></div>
+
+                        <button type="submit" class="btn-primary">
+                            Sign In as Admin
+                        </button>
+
+                        <button type="button" onclick="faceAuthManager.openLoginModal('admin')" class="btn-face-login">
+                            <img src="face-scan-icon.png" class="face-scan-img" alt="Face Scan"
+                                style="height: 20px; width: auto; filter: grayscale(1);"> Face Login
+                        </button>
+                    </form>
+
+                    <div class="divider">
+                        <span>OR</span>
+                    </div>
+
+                    <div class="additional-links">
+                        <a href="user.html" class="link-secondary"><i class="fas fa-user"></i> User Login</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div class="copyright">
+                <i class="far fa-copyright"></i>
+                <span>2026 Smart Bank Corporation</span>
+            </div>
+
+        </div>
+
+        <!-- Right Side - Branding/Illustration -->
+        <div class="auth-right">
+            <div class="branding-content">
+                <h1 class="branding-title">
+                    Welcome to the Smart Bank<br>
+                    <span>Management Portal</span>
+                </h1>
+
+                <!-- CSS Isometric Illustration (Security Variant) -->
+                <div class="iso-illustration">
+                    <!-- The Grid Floor -->
+                    <div class="iso-grid"></div>
+
+                    <!-- The Stand/Dashboard -->
+                    <div class="iso-stand">
+                        <div class="iso-logo">
+                            <span style="color:var(--text-primary)">SMART</span> <span
+                                style="color:#8E2020;">BANKING</span>
+                        </div>
+                        <div class="iso-profile" style="color: var(--primary-blue);"><i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="iso-login-dots"></div>
+                        <div class="iso-btn"><i class="fas fa-arrow-right"></i></div>
+                    </div>
+
+                    <!-- Left Shield -->
+                    <div class="iso-shield">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast" id="toast"></div>
+
+    <!-- Scripts -->
+    <script src="face-auth-fixed.js"></script>
+    <script src="device-detector.js"></script>
+    <script src="auth-helper.js"></script>
+    <script src="api-config.js"></script>
+    <script src="staff-auth.js"></script>
+    <script>
+        // Role selection
+        function selectRole(role) {
+            const staffBtn = document.getElementById('staffRoleBtn');
+            const adminBtn = document.getElementById('adminRoleBtn');
+            const staffForm = document.getElementById('staffForm');
+            const adminForm = document.getElementById('adminForm');
+
+            if (role === 'staff') {
+                // Activate staff
+                staffBtn.classList.add('active');
+                adminBtn.classList.remove('active');
+
+                // Show staff form, hide admin form
+                staffForm.classList.add('active-form');
+                staffForm.style.display = 'block';
+                adminForm.classList.remove('active-form');
+                adminForm.style.display = 'none';
+            } else {
+                // Activate admin
+                adminBtn.classList.add('active');
+                staffBtn.classList.remove('active');
+
+                // Show admin form, hide staff form
+                adminForm.classList.add('active-form');
+                adminForm.style.display = 'block';
+                staffForm.classList.remove('active-form');
+                staffForm.style.display = 'none';
+            }
+        }
+
+        // Toggle password visibility
+        function togglePassword(id) {
+            const input = document.getElementById(id);
+            const icon = input.parentElement.querySelector('.toggle-password');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+
+</html>

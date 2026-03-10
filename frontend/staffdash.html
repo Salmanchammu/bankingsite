@@ -1,0 +1,1869 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bank - Staff Dashboard</title>
+    <link rel="stylesheet" href="modern-dashboard.css">
+    <link rel="stylesheet" href="staffdash.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="face-auth-fixed.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <h1 class="logo-text">Smart<span class="logo-highlight">Bank</span></h1>
+                </div>
+                <p class="menu-label">Menu</p>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" data-page="customers">
+                    <i class="fas fa-users"></i>
+                    <span>Customers</span>
+                </a>
+                <a href="#" class="nav-item" data-page="accounts">
+                    <i class="fas fa-university"></i>
+                    <span>Accounts</span>
+                </a>
+                <a href="#" class="nav-item" data-page="approvals">
+                    <i class="fas fa-check-circle"></i>
+                    <span>KYC Approvals</span>
+                    <span class="badge" id="pendingApprovalsBadge">0</span>
+                </a>
+                <a href="#" class="nav-item" data-page="transactions">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Transactions</span>
+                </a>
+                <a href="#" class="nav-item" data-page="attendance">
+                    <i class="fas fa-clock"></i>
+                    <span>Attendance</span>
+                </a>
+                <a href="#" class="nav-item" data-page="loans">
+                    <i class="fas fa-hand-holding-usd"></i>
+                    <span>Loan Requests</span>
+                    <span class="badge" id="loanBadge">0</span>
+                </a>
+                <a href="#" class="nav-item" data-page="liquidity">
+                    <i class="fas fa-piggy-bank"></i>
+                    <span>Loan Liquidity Fund</span>
+                </a>
+                <a href="#" class="nav-item" data-page="cards">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Card Requests</span>
+                    <span class="badge" id="pendingCardsCount">0</span>
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="#" class="nav-item" data-page="services">
+                    <i class="fas fa-briefcase"></i>
+                    <span>Services</span>
+                </a>
+                <a href="#" class="nav-item" data-page="supportdesk">
+                    <i class="fas fa-headset"></i>
+                    <span>Support Desk</span>
+                </a>
+
+                <p class="menu-label">Others</p>
+                <a href="#" class="nav-item" data-page="profile">
+                    <i class="fas fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+                <a href="#" class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="#" onclick="logout()" class="nav-item">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <img id="staffAvatar" src="" alt="Staff" class="user-avatar">
+                    <div class="user-info">
+                        <div class="user-name" id="staffName">Loading...</div>
+                        <div class="user-role" id="staffRole">Staff Member</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Bar -->
+            <div class="top-bar">
+                <div class="welcome-section">
+                    <h1 id="pageTitle">Staff Dashboard</h1>
+                    <p>Welcome back, <span id="staffGreeting">Staff Member</span>!</p>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <!-- Global Search Button / Input -->
+                    <div class="search-container"
+                        style="position: relative; margin-right: 12px; display: flex; align-items: center;">
+                        <input type="text" id="globalSearchInput" placeholder="Search..."
+                            style="padding: 8px 16px 8px 36px; border: 1px solid var(--border-color); border-radius: 20px; outline: none; background: var(--bg-card); color: var(--text-primary); width: 200px; font-family: inherit; transition: all 0.3s ease;">
+                        <i class="fas fa-search"
+                            style="position: absolute; left: 12px; color: var(--text-secondary); pointer-events: none;"></i>
+                    </div>
+                    <button class="action-btn" id="themeToggle">
+                        <i class="fas fa-moon"></i>
+                    </button>
+                    <button class="action-btn" onclick="showNotifications()">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notificationBadge">0</span>
+                    </button>
+                    <img id="topBarAvatar" src="" alt="Staff" class="user-avatar-small" onclick="showPage('profile')"
+                        style="cursor: pointer;">
+                </div>
+            </div>
+
+            <!-- Notifications Modal -->
+            <div id="notificationsModal" class="modal">
+                <div class="modal-content" style="max-width: 400px; padding: 0;">
+                    <div
+                        style="padding: 16px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 style="margin: 0; font-size: 16px;">Notifications</h3>
+                        <button onclick="closeModal('notificationsModal')"
+                            style="background: none; border: none; font-size: 20px; cursor: pointer; color: var(--text-secondary);">&times;</button>
+                    </div>
+                    <div id="notificationsList" style="max-height: 300px; overflow-y: auto; padding: 16px;">
+                        <p style="text-align: center; color: var(--text-secondary); margin: 0;">No new notifications</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Page -->
+            <div id="dashboard" class="page-content active">
+                <!-- Stats Cards -->
+                <div class="dashboard-grid grid-4" style="margin-bottom: 24px;">
+                    <div class="stat-card">
+                        <div class="stat-icon"
+                            style="background: rgba(128, 0, 0, 0.1); color: #800000; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-users" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statCustomers">13</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Total<br>Customers</div>
+                                </div>
+                            </div>
+                            <div class="stat-change positive" id="statCustomersTrend">
+                                <i class="fas fa-arrow-up"></i> 12%<br>this month
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon"
+                            style="background: rgba(128, 0, 0, 0.1); color: #800000; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-university" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statAccounts">11</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Active<br>Accounts</div>
+                                </div>
+                            </div>
+                            <div class="stat-change positive" id="statAccountsTrend">
+                                <i class="fas fa-arrow-up"></i> 8%<br>this month
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon"
+                            style="background: rgba(128, 0, 0, 0.1); color: #800000; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-hand-holding-usd" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statLoans">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Pending<br>Loans</div>
+                                </div>
+                            </div>
+                            <div class="stat-change" id="statLoansTrend" style="color: #64748b;">
+                                <i class="fas fa-minus"></i> No<br>change
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon"
+                            style="background: rgba(128, 0, 0, 0.1); color: #800000; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-rupee-sign" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statBalance">₹5,70,000</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-top: 4px solid #10b981;">
+                        <div class="stat-icon"
+                            style="background: #ecfdf5; color: #10b981; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-piggy-bank" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="statLiquidityFund">₹10L</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Loan Liquidity<br>Fund</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="dashboard-grid grid-2">
+                    <!-- Recent Activities -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activities</h3>
+                        </div>
+                        <div id="recentActivities"></div>
+                    </div>
+
+                    <!-- Pending Loan Requests -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Pending Loan Requests</h3>
+                        </div>
+                        <div id="pendingLoans"></div>
+                    </div>
+                </div>
+
+                <!-- Customer Transactions -->
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent Transactions</h3>
+                    </div>
+                    <div class="invoice-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search..." id="transactionSearch">
+                        </div>
+                        <button class="filter-btn">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                    <div id="transactionsList"></div>
+                </div>
+            </div>
+
+            <!-- Customers Page -->
+            <div id="customers" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Customer Management</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showAddCustomerModal()">
+                            <i class="fas fa-user-plus"></i>
+                            Add Customer
+                        </button>
+                        <button class="btn btn-secondary btn-sm" onclick="showSendNotificationModal()">
+                            <i class="fas fa-bell"></i>
+                            Send Notification
+                        </button>
+                    </div>
+                    <div class="invoice-controls">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search customers..." id="customerSearch">
+                        </div>
+                        <button class="filter-btn">
+                            <i class="fas fa-filter"></i>
+                            Filter
+                        </button>
+                        <button class="export-btn">
+                            <i class="fas fa-download"></i>
+                            Export
+                        </button>
+                    </div>
+                    <div id="customersList"></div>
+                </div>
+            </div>
+
+
+
+            <!-- Transactions Page -->
+            <div id="transactions" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">User Quick Transactions</h3>
+                    </div>
+                    <div class="card-body" style="padding: 24px;">
+                        <div class="dashboard-grid grid-3"
+                            style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                            <!-- Add Money Form -->
+                            <div class="tx-card-premium success">
+                                <div class="tx-card-header">
+                                    <i class="fas fa-plus-circle" style="color:#10b981;"></i>
+                                    <h4 style="color:#10b981;">Add Money</h4>
+                                </div>
+                                <div class="tx-card-body">
+                                    <form id="staffAddMoneyForm" onsubmit="submitStaffAddMoney(event)">
+                                        <div class="tx-input-group">
+                                            <label>Account Number / ID</label>
+                                            <div class="tx-input-wrapper">
+                                                <i class="fas fa-university"></i>
+                                                <input type="text" id="addAccountId" placeholder="e.g. SB... or ID"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="tx-input-group">
+                                            <label>Amount (₹)</label>
+                                            <div class="tx-input-wrapper">
+                                                <i class="fas fa-indian-rupee-sign"></i>
+                                                <input type="number" step="0.01" id="addAmount"
+                                                    placeholder="Enter amount" required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn-tx-submit success">
+                                            <i class="fas fa-check-double"></i> Add Funds
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Withdraw Money Form -->
+                            <div class="tx-card-premium danger">
+                                <div class="tx-card-header">
+                                    <i class="fas fa-minus-circle" style="color:#ef4444;"></i>
+                                    <h4 style="color:#ef4444;">Withdraw Money</h4>
+                                </div>
+                                <div class="tx-card-body">
+                                    <form id="staffWithdrawMoneyForm" onsubmit="submitStaffWithdrawMoney(event)">
+                                        <div class="tx-input-group">
+                                            <label>Account Number / ID</label>
+                                            <div class="tx-input-wrapper">
+                                                <i class="fas fa-university"></i>
+                                                <input type="text" id="withdrawAccountId" placeholder="e.g. SB... or ID"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="tx-input-group">
+                                            <label>Amount (₹)</label>
+                                            <div class="tx-input-wrapper">
+                                                <i class="fas fa-indian-rupee-sign"></i>
+                                                <input type="number" step="0.01" id="withdrawAmount"
+                                                    placeholder="Enter amount" required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn-tx-submit danger">
+                                            <i class="fas fa-hand-holding-dollar"></i> Withdraw Funds
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Transfer Money Form -->
+                            <div class="tx-card-premium info">
+                                <div class="tx-card-header">
+                                    <i class="fas fa-exchange-alt" style="color:#3b82f6;"></i>
+                                    <h4 style="color:#3b82f6;">Transfer Money</h4>
+                                </div>
+                                <div class="tx-card-body">
+                                    <form id="staffTransferMoneyForm" onsubmit="submitStaffTransferMoney(event)">
+                                        <div class="tx-input-group">
+                                            <label>From Acc. No / ID</label>
+                                            <div class="tx-input-wrapper">
+                                                <i class="fas fa-arrow-right-from-bracket"></i>
+                                                <input type="text" id="transferSenderId" placeholder="Sender Account"
+                                                    required>
+                                            </div>
+                                        </div>
+                                        <div class="tx-input-group">
+                                            <label>To Account Number</label>
+                                            <div class="tx-input-wrapper">
+                                                <i class="fas fa-arrow-right-to-bracket"></i>
+                                                <input type="text" id="transferReceiverAcc"
+                                                    placeholder="Receiver Acc No" required>
+                                            </div>
+                                        </div>
+                                        <div class="tx-input-group" style="margin-bottom: 24px;">
+                                            <label>Amount (₹)</label>
+                                            <div class="tx-input-wrapper">
+                                                <i class="fas fa-indian-rupee-sign"></i>
+                                                <input type="number" step="0.01" id="transferAmount"
+                                                    placeholder="Enter amount" required>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn-tx-submit info">
+                                            <i class="fas fa-paper-plane"></i> Execute Transfer
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="margin-top: 24px;">
+                    <div class="card-header">
+                        <h3 class="card-title">Transaction History</h3>
+                    </div>
+                    <div id="allTransactionsList"></div>
+                </div>
+            </div>
+
+
+
+            <!-- Accounts Page -->
+            <div id="accounts" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Account Management</h3>
+                        <button class="btn btn-primary btn-sm" onclick="showAddAccountModal()">
+                            <i class="fas fa-plus-circle"></i> Add Account
+                        </button>
+                    </div>
+                    <div id="accountsList"></div>
+                </div>
+            </div>
+
+            <!-- KYC Approvals Page -->
+            <div id="approvals" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pending KYC Approvals</h3>
+                    </div>
+                    <div id="approvalsList"></div>
+                </div>
+            </div>
+
+            <div id="loans" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Loan Management</h3>
+                    </div>
+                    <div id="loansList"></div>
+                </div>
+            </div>
+
+            <!-- Loan Liquidity Fund Page (Staff View) -->
+            <div id="liquidity" class="page-content">
+                <div class="dashboard-grid grid-4" style="margin-bottom: 24px;">
+                    <div class="stat-card" style="border-top: 4px solid #10b981;">
+                        <div class="stat-icon"
+                            style="background: #ecfdf5; color: #10b981; border-radius: 12px; display:flex;align-items:center;justify-content:center;">
+                            <i class="fas fa-piggy-bank" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="sLiqFundBalance">—</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Fund Balance</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-top: 4px solid #800000;">
+                        <div class="stat-icon"
+                            style="background: rgba(128, 0, 0, 0.1); color: #800000; border-radius: 12px; display:flex;align-items:center;justify-content:center;">
+                            <i class="fas fa-check-double" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="sLiqTotalPaid">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Fully Paid</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-top: 4px solid #f59e0b;">
+                        <div class="stat-icon"
+                            style="background: #fffbeb; color: #f59e0b; border-radius: 12px; display:flex;align-items:center;justify-content:center;">
+                            <i class="fas fa-hourglass-half" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="sLiqActiveLoans">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Active Loans</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="border-top: 4px solid #ef4444;">
+                        <div class="stat-icon"
+                            style="background: #fef2f2; color: #ef4444; border-radius: 12px; display:flex;align-items:center;justify-content:center;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 24px;"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-value-group">
+                                <div class="stat-value" id="sLiqOverdue">0</div>
+                                <div class="stat-text-group">
+                                    <div class="stat-label">Overdue</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title"><i class="fas fa-history"
+                                style="color:#10b981;margin-right:8px;"></i>Loan Repayment History</h3>
+                    </div>
+                    <div id="sLiqLoansList" style="overflow-x: auto; padding: 16px;">
+                        <p style="text-align:center;padding:2rem;color:var(--text-secondary);">Loading...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Requests Page -->
+            <div id="cards" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Card Requests</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Type</th>
+                                    <th>Account</th>
+                                    <th>Credit Limit</th>
+                                    <th>Status</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cardsTable">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Page -->
+            <div id="reports" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Reports & Analytics</h3>
+                    </div>
+                    <div
+                        style="padding: 15px 20px; display: flex; flex-wrap: wrap; gap: 10px; border-bottom: 1px solid var(--border-color);">
+                        <button class="btn btn-primary btn-sm" onclick="downloadReport('all')"><i
+                                class="fas fa-download"></i> All Data</button>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadReport('loans')"><i
+                                class="fas fa-download"></i> Loans</button>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadReport('transactions')"><i
+                                class="fas fa-download"></i> Transactions</button>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadReport('users')"><i
+                                class="fas fa-download"></i> Users</button>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadReport('Savings')"><i
+                                class="fas fa-download"></i> Saving Acc</button>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadReport('Current')"><i
+                                class="fas fa-download"></i> Current Acc</button>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadReport('Salary')"><i
+                                class="fas fa-download"></i> Salary Acc</button>
+                    </div>
+                    <div id="reportsContent" style="padding: 20px;">
+                        <div class="dashboard-grid grid-2" style="margin-bottom: 24px;">
+                            <div class="card" style="padding: 15px;">
+                                <h4 style="margin-bottom: 15px; color: var(--text-secondary);">Account Distribution</h4>
+                                <div style="position: relative; height: 300px; width: 100%;">
+                                    <canvas id="accountTypesChart"></canvas>
+                                </div>
+                            </div>
+                            <div class="card" style="padding: 15px;">
+                                <h4 style="margin-bottom: 15px; color: var(--text-secondary);">Loan Request Status</h4>
+                                <div style="position: relative; height: 300px; width: 100%;">
+                                    <canvas id="loanStatusChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card" style="padding: 15px; margin-top: 24px;">
+                            <h4 style="margin-bottom: 15px; color: var(--text-secondary);">Transaction Volume (Last 7
+                                Days)</h4>
+                            <div style="position: relative; height: 350px; width: 100%;">
+                                <canvas id="transactionVolumeChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">My Profile</h3>
+                    </div>
+                    <div id="profileContent"></div>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div id="settings" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Settings</h3>
+                        <button class="btn btn-primary" onclick="openFaceRegistration()">
+                            <i class="fas fa-user-plus"></i> Register Face
+                        </button>
+                    </div>
+                    <div id="settingsContent"></div>
+                </div>
+            </div>
+
+            <!-- Attendance Page -->
+            <div id="attendance" class="page-content">
+                <div class="dashboard-grid grid-2" style="margin-bottom: 24px;">
+                    <!-- Clock In/Out Card -->
+                    <div class="card attendance-main-card" style="text-align: center; padding: 40px 24px;">
+                        <div class="attendance-status-badge" id="attendanceStatusBadge"
+                            style="display: inline-block; padding: 8px 20px; border-radius: 20px; font-weight: bold; margin-bottom: 24px; background: #fee2e2; color: #991b1b;">
+                            Not Clocked In
+                        </div>
+
+                        <div class="clock-display" style="margin-bottom: 32px;">
+                            <div id="digitalClock"
+                                style="font-size: 48px; font-weight: 700; font-family: 'Courier New', Courier, monospace; letter-spacing: 2px;">
+                                00:00:00</div>
+                            <div id="currentDate"
+                                style="color: var(--text-secondary); margin-top: 8px; font-size: 16px;">Wednesday, March
+                                4, 2026</div>
+                        </div>
+
+                        <div class="attendance-actions" style="display: flex; justify-content: center; gap: 20px;">
+                            <button id="clockInBtn" class="btn btn-primary"
+                                style="padding: 15px 40px; font-size: 18px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 8px;"
+                                onclick="handleClockIn()">
+                                <i class="fas fa-sign-in-alt" style="font-size: 24px;"></i>
+                                <span>Clock In</span>
+                            </button>
+                            <button id="clockOutBtn" class="btn btn-secondary"
+                                style="padding: 15px 40px; font-size: 18px; border-radius: 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; background: #6b7280; cursor: not-allowed;"
+                                onclick="handleClockOut()" disabled>
+                                <i class="fas fa-sign-out-alt" style="font-size: 24px;"></i>
+                                <span>Clock Out</span>
+                            </button>
+                        </div>
+
+                        <div id="shiftInfo"
+                            style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border-color); display: none;">
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                                <div style="text-align: left;">
+                                    <small style="color: var(--text-secondary); display: block;">Clocked In At</small>
+                                    <strong id="clockInTimeDisplay" style="font-size: 18px;">--:--</strong>
+                                </div>
+                                <div style="text-align: right;">
+                                    <small style="color: var(--text-secondary); display: block;">Working Hours</small>
+                                    <strong id="workingHoursDisplay" style="font-size: 18px;">0.00h</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shift Guidelines Card -->
+                    <div class="card" style="padding: 24px;">
+                        <h3 class="card-title" style="margin-bottom: 20px;"><i
+                                class="fas fa-info-circle text-primary"></i> Attendance Rules</h3>
+                        <div class="rules-list">
+                            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                                <div
+                                    style="width: 24px; height: 24px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: var(--primary-color); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <i class="fas fa-check" style="font-size: 10px;"></i>
+                                </div>
+                                <p style="font-size: 14px; margin: 0; color: var(--text-secondary);">Face authentication
+                                    is mandatory for both clock-in and clock-out operations.</p>
+                            </div>
+                            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                                <div
+                                    style="width: 24px; height: 24px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: var(--primary-color); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <i class="fas fa-check" style="font-size: 10px;"></i>
+                                </div>
+                                <p style="font-size: 14px; margin: 0; color: var(--text-secondary);">Standard working
+                                    hours are from 9:00 AM to 6:00 PM.</p>
+                            </div>
+                            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                                <div
+                                    style="width: 24px; height: 24px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: var(--primary-color); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <i class="fas fa-check" style="font-size: 10px;"></i>
+                                </div>
+                                <p style="font-size: 14px; margin: 0; color: var(--text-secondary);">Minimum of 8 hours
+                                    is required for a full-day status.</p>
+                            </div>
+                            <div style="display: flex; gap: 12px;">
+                                <div
+                                    style="width: 24px; height: 24px; border-radius: 50%; background: rgba(59, 130, 246, 0.1); color: var(--primary-color); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <i class="fas fa-check" style="font-size: 10px;"></i>
+                                </div>
+                                <p style="font-size: 14px; margin: 0; color: var(--text-secondary);">Overtime is
+                                    calculated automatically after 9 hours of work.</p>
+                            </div>
+                        </div>
+
+                        <div class="attendance-summary"
+                            style="margin-top: 32px; padding: 20px; background: var(--bg-light); border-radius: 12px;">
+                            <h4
+                                style="margin: 0 0 12px; font-size: 14px; text-transform: uppercase; color: var(--text-secondary);">
+                                This Month Summary</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                                <div>
+                                    <div style="font-size: 24px; font-weight: 700;" id="monthlyDays">0</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">Days Present</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 24px; font-weight: 700;" id="monthlyHours">0.0</div>
+                                    <div style="font-size: 12px; color: var(--text-secondary);">Avg. Hours</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Attendance History</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Clock In</th>
+                                    <th>Clock Out</th>
+                                    <th>Total Hours</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="attendanceHistoryTable">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- User Activity Modal -->
+    <div id="userActivityModal" class="modal"
+        style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
+        <div class="modal-content" style="max-width: 900px; width:95%; padding: 0; overflow: hidden; max-height:90vh;">
+            <div
+                style="background: var(--primary-color); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 18px;"><i class="fas fa-history"></i> User Activity: <span
+                        id="activityUserName"></span></h3>
+                <button
+                    onclick="document.getElementById('userActivityModal').classList.remove('active'); setTimeout(() => document.getElementById('userActivityModal').style.display='none', 300)"
+                    style="background: none; border: none; font-size: 24px; cursor: pointer; color: white;">&times;</button>
+            </div>
+            <div id="activityDetails"
+                style="padding: 20px; max-height: 80vh; overflow-y: auto; background: var(--bg-card);">
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Customer Modal (Premium Redesign) -->
+    <div id="addCustomerModal" class="modal">
+        <div class="modal-content" style="max-width: 550px; border-radius: 20px; overflow: hidden; padding: 0;">
+            <!-- Header -->
+            <div
+                style="background: linear-gradient(135deg, #800000 0%, #a52a2a 100%); padding: 24px 28px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div
+                        style="width: 46px; height: 46px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white;">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: white;">Add New Customer</h3>
+                        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.8);">Register a new bank
+                            customer</p>
+                    </div>
+                </div>
+                <button onclick="closeAddCustomerModal()"
+                    style="background: rgba(255,255,255,0.2); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: white; font-size: 18px; display: flex; align-items: center; justify-content: center;">&times;</button>
+            </div>
+
+            <div style="padding: 24px 28px 28px;">
+                <form onsubmit="submitAddCustomer(event)">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                        <div style="grid-column: span 2;">
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-id-card" style="margin-right: 5px; color: #a52a2a;"></i>Full Name
+                            </label>
+                            <input type="text" id="newCustomerName" required placeholder="Enter customer's full name"
+                                class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-user-tag" style="margin-right: 5px; color: #a52a2a;"></i>Username
+                            </label>
+                            <input type="text" id="newCustomerUsername" required placeholder="Assign username"
+                                class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-envelope" style="margin-right: 5px; color: #a52a2a;"></i>Email Address
+                            </label>
+                            <input type="email" id="newCustomerEmail" required placeholder="customer@example.com"
+                                class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-phone-alt" style="margin-right: 5px; color: #a52a2a;"></i>Phone Number
+                            </label>
+                            <input type="text" id="newCustomerPhone" placeholder="+91 XXXXXXXXXX" class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-key" style="margin-right: 5px; color: #a52a2a;"></i>Initial Password
+                            </label>
+                            <input type="password" id="newCustomerPassword" required minlength="6"
+                                placeholder="Min 6 characters" class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-calendar-alt" style="margin-right: 5px; color: #a52a2a;"></i>Date of
+                                Birth
+                            </label>
+                            <input type="date" id="newCustomerDob" required class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" onclick="closeAddCustomerModal()"
+                            style="flex: 1; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;">Cancel</button>
+                        <button type="submit" id="addCustomerSubmitBtn"
+                            style="flex: 2; padding: 14px; background: linear-gradient(135deg, #800000 0%, #a52a2a 100%); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(128,0,0,0.3); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="fas fa-plus-circle"></i> Create Customer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Customer Modal (Premium Redesign) -->
+    <div id="editCustomerModal" class="modal">
+        <div class="modal-content" style="max-width: 550px; border-radius: 20px; overflow: hidden; padding: 0;">
+            <!-- Header -->
+            <div
+                style="background: linear-gradient(135deg, #800000 0%, #a52a2a 100%); padding: 24px 28px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div
+                        style="width: 46px; height: 46px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white;">
+                        <i class="fas fa-user-edit"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: white;">Edit Customer</h3>
+                        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.8);">Modify customer profile
+                            details</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('editCustomerModal')"
+                    style="background: rgba(255,255,255,0.2); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: white; font-size: 18px; display: flex; align-items: center; justify-content: center;">&times;</button>
+            </div>
+
+            <div style="padding: 24px 28px 28px;">
+                <form onsubmit="submitEditCustomer(event)">
+                    <input type="hidden" id="editCustomerId">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
+                        <div style="grid-column: span 2;">
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-id-card" style="margin-right: 5px; color: #a52a2a;"></i>Full Name
+                            </label>
+                            <input type="text" id="editCustomerName" required placeholder="Full Name"
+                                class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-envelope" style="margin-right: 5px; color: #a52a2a;"></i>Email Address
+                            </label>
+                            <input type="email" id="editCustomerEmail" required placeholder="Email" class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                        <div>
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-phone-alt" style="margin-right: 5px; color: #a52a2a;"></i>Phone Number
+                            </label>
+                            <input type="text" id="editCustomerPhone" placeholder="Phone" class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                        <div style="grid-column: span 2;">
+                            <label
+                                style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                                <i class="fas fa-map-marker-alt" style="margin-right: 5px; color: #a52a2a;"></i>Address
+                                / KYC Details
+                            </label>
+                            <textarea id="editCustomerAddress" rows="3" placeholder="Residential address"
+                                class="form-control"
+                                style="width: 100%; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; outline: none; transition: border-color 0.2s; resize: none;"
+                                onfocus="this.style.borderColor='#a52a2a'"
+                                onblur="this.style.borderColor='#e5e7eb'"></textarea>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" onclick="closeModal('editCustomerModal')"
+                            style="flex: 1; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;">Cancel</button>
+                        <button type="submit" id="editCustomerSubmitBtn"
+                            style="flex: 2; padding: 14px; background: linear-gradient(135deg, #800000 0%, #a52a2a 100%); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(128,0,0,0.3); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Card Action Modals -->
+    <div id="approveCardModal" class="modal">
+        <div class="modal-content"
+            style="max-width: 400px; border-radius: 20px; text-align: center; padding: 0; overflow: hidden;">
+            <div style="background: #10b981; padding: 40px 20px; color: white;">
+                <div
+                    style="width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h3 style="margin: 0; font-size: 22px; font-weight: 800;">Approve Request?</h3>
+            </div>
+            <div style="padding: 30px 24px;">
+                <p style="color: #6b7280; font-size: 15px; margin-bottom: 30px;">Are you sure you want to approve this
+                    card request? This will notify the customer immediately.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="closeModal('approveCardModal')"
+                        style="flex: 1; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Cancel</button>
+                    <button id="confirmApproveCardBtn"
+                        style="flex: 1; padding: 14px; background: #10b981; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">Yes,
+                        Approve</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="rejectCardModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; border-radius: 20px; padding: 0; overflow: hidden;">
+            <div style="background: #ef4444; padding: 30px; color: white; text-align: center;">
+                <div
+                    style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 15px;">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <h3 style="margin: 0; font-size: 20px; font-weight: 800;">Reject Request</h3>
+            </div>
+            <div style="padding: 24px;">
+                <label
+                    style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">Reason
+                    for Rejection</label>
+                <textarea id="cardRejectReason" rows="3"
+                    placeholder="e.g. Insufficient credit history, Invalid documents..."
+                    style="width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 14px; outline: none; margin-bottom: 24px; resize: none;"
+                    onfocus="this.style.borderColor='#ef4444'"></textarea>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="closeModal('rejectCardModal')"
+                        style="flex: 1; padding: 12px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Cancel</button>
+                    <button id="confirmRejectCardBtn"
+                        style="flex: 1; padding: 12px; background: #ef4444; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer;">Reject
+                        Card</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Loan Action Modals -->
+    <div id="approveLoanModal" class="modal">
+        <div class="modal-content"
+            style="max-width: 400px; border-radius: 20px; text-align: center; padding: 0; overflow: hidden;">
+            <div style="background: #10b981; padding: 40px 20px; color: white;">
+                <div
+                    style="width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <h3 style="margin: 0; font-size: 22px; font-weight: 800;">Approve Loan?</h3>
+            </div>
+            <div style="padding: 30px 24px;">
+                <p style="color: #6b7280; font-size: 15px; margin-bottom: 30px;">Finalize approval for this loan
+                    request? The funds will be disbursed to the user's account.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="closeModal('approveLoanModal')"
+                        style="flex: 1; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Cancel</button>
+                    <button id="confirmApproveLoanBtn"
+                        style="flex: 1; padding: 14px; background: #10b981; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(16,185,129,0.3);">Approve
+                        & Disburse</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="rejectLoanModal" class="modal">
+        <div class="modal-content"
+            style="max-width: 400px; border-radius: 20px; text-align: center; padding: 0; overflow: hidden;">
+            <div style="background: #ef4444; padding: 40px 20px; color: white;">
+                <div
+                    style="width: 70px; height: 70px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 20px;">
+                    <i class="fas fa-ban"></i>
+                </div>
+                <h3 style="margin: 0; font-size: 22px; font-weight: 800;">Reject Loan?</h3>
+            </div>
+            <div style="padding: 30px 24px;">
+                <p style="color: #6b7280; font-size: 15px; margin-bottom: 30px;">Are you sure you want to reject this
+                    loan application? This action cannot be undone.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="closeModal('rejectLoanModal')"
+                        style="flex: 1; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Back</button>
+                    <button id="confirmRejectLoanBtn"
+                        style="flex: 1; padding: 14px; background: #ef4444; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(239,68,68,0.3);">Confirm
+                        Rejection</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services Page -->
+    <div id="services" class="page-content" style="display: none;">
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <h3 class="card-title">Manage Services & Applications</h3>
+            </div>
+            <div class="card-body" style="padding: 24px;">
+                <p style="color: var(--text-secondary); margin-bottom: 24px;">Offer new services to users or manage
+                    their existing applications.</p>
+                <div class="dashboard-grid"
+                    style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                    <button onclick="showMutualFundModal()" class="quick-action-btn"
+                        style="padding:15px; border-radius:12px; border:1px solid #e5e7eb; background:#fff; display:flex; flex-direction:column; align-items:center; cursor:pointer;">
+                        <i class="fas fa-chart-line"
+                            style="font-size:24px; color:var(--primary); margin-bottom:10px;"></i>
+                        <span style="font-weight: 600; font-size: 15px;">Mutual Fund</span>
+                    </button>
+
+                    <button onclick="showLifeInsuranceModal()" class="quick-action-btn"
+                        style="padding:15px; border-radius:12px; border:1px solid #e5e7eb; background:#fff; display:flex; flex-direction:column; align-items:center; cursor:pointer;">
+                        <i class="fas fa-umbrella"
+                            style="font-size:24px; color:var(--primary); margin-bottom:10px;"></i>
+                        <span style="font-weight: 600; font-size: 15px;">Life Insurance</span>
+                    </button>
+
+                    <button onclick="alert('Instant Gold Loan at 8% p.a. - Coming Soon')" class="quick-action-btn"
+                        style="padding:15px; border-radius:12px; border:1px solid #e5e7eb; background:#fff; display:flex; flex-direction:column; align-items:center; cursor:pointer;">
+                        <i class="fas fa-coins" style="font-size:24px; color:var(--primary); margin-bottom:10px;"></i>
+                        <span style="font-weight: 600; font-size: 15px;">Gold Loan</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Pending Applications</h3>
+            </div>
+            <div class="card-body" style="padding: 24px;">
+                <div id="pendingApplicationsList"
+                    style="text-align: center; color: var(--text-secondary); padding: 2rem;">No pending applications
+                    found</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Account Modal (Premium Redesign) -->
+    <div id="addAccountModal" class="modal">
+        <div class="modal-content" style="max-width: 460px; border-radius: 20px; overflow: hidden; padding: 0;">
+            <!-- Header -->
+            <div
+                style="background: linear-gradient(135deg, #800000 0%, #a52a2a 100%); padding: 24px 28px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div
+                        style="width: 46px; height: 46px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white;">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: white;">Create Account</h3>
+                        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.8);">Open a new bank account</p>
+                    </div>
+                </div>
+                <button onclick="closeAddAccountModal()"
+                    style="background: rgba(255,255,255,0.2); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: white; font-size: 18px; display: flex; align-items: center; justify-content: center;">&times;</button>
+            </div>
+
+            <div style="padding: 24px 28px 28px;">
+                <form onsubmit="submitAddAccount(event)">
+                    <div style="margin-bottom: 20px;">
+                        <label
+                            style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                            <i class="fas fa-user" style="margin-right: 5px; color: #a52a2a;"></i>Customer User ID /
+                            Name
+                        </label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="newAccountUserId" placeholder="Numerical ID or Search Name" required
+                                class="form-control"
+                                style="flex: 1; padding: 12px 14px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 15px; font-weight: 500; color: #111827; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                            <button type="button" onclick="launchUserLookup()" title="Search User"
+                                style="background:#800000; color:white; border:none; border-radius:12px; padding:0 15px; cursor:pointer;"><i
+                                    class="fas fa-search"></i></button>
+                        </div>
+                    </div>
+
+                    <!-- Account Type — Visual Cards -->
+                    <div style="margin-bottom: 20px;">
+                        <label
+                            style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 10px;">
+                            <i class="fas fa-credit-card" style="margin-right: 5px; color: #a52a2a;"></i>Account Type
+                        </label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px;">
+                            <label style="cursor: pointer;">
+                                <input type="radio" name="accountTypeRadio" value="Savings" checked style="display:none"
+                                    onchange="document.getElementById('newAccountType').value=this.value; document.querySelectorAll('.acc-type-card').forEach(c=>c.style.borderColor='#e5e7eb'); this.closest('label').querySelector('.acc-type-card').style.borderColor='#a52a2a';">
+                                <div class="acc-type-card"
+                                    style="text-align: center; padding: 14px 8px; border: 2px solid #a52a2a; border-radius: 12px; background: #fff1f2; transition: all 0.2s;">
+                                    <i class="fas fa-piggy-bank"
+                                        style="font-size: 22px; color: #a52a2a; margin-bottom: 6px; display: block;"></i>
+                                    <div style="font-size: 12px; font-weight: 700; color: #800000;">Savings</div>
+                                </div>
+                            </label>
+                            <label style="cursor: pointer;">
+                                <input type="radio" name="accountTypeRadio" value="Current" style="display:none"
+                                    onchange="document.getElementById('newAccountType').value=this.value; document.querySelectorAll('.acc-type-card').forEach(c=>c.style.borderColor='#e5e7eb'); this.closest('label').querySelector('.acc-type-card').style.borderColor='#a52a2a'; this.closest('label').querySelector('.acc-type-card').style.background='#fff1f2';">
+                                <div class="acc-type-card"
+                                    style="text-align: center; padding: 14px 8px; border: 2px solid #e5e7eb; border-radius: 12px; background: #f9fafb; transition: all 0.2s;">
+                                    <i class="fas fa-briefcase"
+                                        style="font-size: 22px; color: #6b7280; margin-bottom: 6px; display: block;"></i>
+                                    <div style="font-size: 12px; font-weight: 700; color: #374151;">Current</div>
+                                </div>
+                            </label>
+                            <label style="cursor: pointer;">
+                                <input type="radio" name="accountTypeRadio" value="Salary" style="display:none"
+                                    onchange="document.getElementById('newAccountType').value=this.value; document.querySelectorAll('.acc-type-card').forEach(c=>c.style.borderColor='#e5e7eb'); this.closest('label').querySelector('.acc-type-card').style.borderColor='#a52a2a'; this.closest('label').querySelector('.acc-type-card').style.background='#fff1f2';">
+                                <div class="acc-type-card"
+                                    style="text-align: center; padding: 14px 8px; border: 2px solid #e5e7eb; border-radius: 12px; background: #f9fafb; transition: all 0.2s;">
+                                    <i class="fas fa-wallet"
+                                        style="font-size: 22px; color: #6b7280; margin-bottom: 6px; display: block;"></i>
+                                    <div style="font-size: 12px; font-weight: 700; color: #374151;">Salary</div>
+                                </div>
+                            </label>
+                        </div>
+                        <!-- Hidden select for form submission compatibility -->
+                        <select id="newAccountType" required style="display:none">
+                            <option value="Savings" selected>Savings Account</option>
+                            <option value="Current">Current Account</option>
+                            <option value="Salary">Salary Account</option>
+                        </select>
+                    </div>
+
+                    <!-- Initial Balance -->
+                    <div style="margin-bottom: 24px;">
+                        <label
+                            style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                            <i class="fas fa-rupee-sign" style="margin-right: 5px; color: #a52a2a;"></i>Initial Balance
+                        </label>
+                        <div style="position: relative;">
+                            <span
+                                style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; font-weight: 700; color: #9ca3af;">₹</span>
+                            <input type="number" step="0.01" id="newAccountBalance" value="0.00" required
+                                class="form-control"
+                                style="width: 100%; padding: 12px 14px 12px 36px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 18px; font-weight: 700; color: #111827; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#a52a2a'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" onclick="closeAddAccountModal()"
+                            style="flex: 1; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;">Cancel</button>
+                        <button type="submit" id="addAccountSubmitBtn"
+                            style="flex: 2; padding: 14px; background: linear-gradient(135deg, #800000 0%, #a52a2a 100%); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(128,0,0,0.3); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="fas fa-plus-circle"></i> Open Account
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deposit Money Modal (Premium Redesign) -->
+    <div id="depositMoneyModal" class="modal">
+        <div class="modal-content" style="max-width: 440px; border-radius: 20px; overflow: hidden; padding: 0;">
+            <!-- Header -->
+            <div
+                style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); padding: 24px 28px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div
+                        style="width: 46px; height: 46px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white;">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: white;">Deposit Funds</h3>
+                        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.8);">Credit money to account</p>
+                    </div>
+                </div>
+                <button onclick="closeModal('depositMoneyModal')"
+                    style="background: rgba(255,255,255,0.2); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: white; font-size: 18px; display: flex; align-items: center; justify-content: center;">&times;</button>
+            </div>
+
+            <div style="padding: 24px 28px 28px;">
+                <!-- Account Info Card -->
+                <div
+                    style="background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <div
+                        style="width: 36px; height: 36px; background: #10b981; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;">
+                        <i class="fas fa-university" style="font-size: 15px;"></i>
+                    </div>
+                    <div>
+                        <div
+                            style="font-size: 11px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Target Account</div>
+                        <div id="depositModalAccountIdDisplay"
+                            style="font-size: 15px; font-weight: 700; color: #111827; font-family: monospace; letter-spacing: 1px;">
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="depositModalAccountId">
+
+                <form onsubmit="submitStaffDepositModal(event)">
+                    <!-- Amount Input -->
+                    <div style="margin-bottom: 16px;">
+                        <label
+                            style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                            <i class="fas fa-rupee-sign" style="margin-right: 5px; color: #10b981;"></i>Amount to
+                            Deposit
+                        </label>
+                        <div style="position: relative;">
+                            <span
+                                style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; font-weight: 700; color: #6b7280;">₹</span>
+                            <input type="number" step="0.01" min="1" id="depositModalAmount" placeholder="0.00" required
+                                class="form-control"
+                                style="width: 100%; padding: 14px 14px 14px 36px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 22px; font-weight: 700; color: #111827; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#10b981'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                    </div>
+
+                    <!-- Quick Amount Buttons -->
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 8px;">Quick
+                            Amounts</div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="document.getElementById('depositModalAmount').value='500'"
+                                style="padding: 6px 14px; background: #f0fdf4; color: #059669; border: 1.5px solid #bbf7d0; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;"
+                                onmouseover="this.style.background='#dcfce7'"
+                                onmouseout="this.style.background='#f0fdf4'">₹500</button>
+                            <button type="button" onclick="document.getElementById('depositModalAmount').value='1000'"
+                                style="padding: 6px 14px; background: #f0fdf4; color: #059669; border: 1.5px solid #bbf7d0; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;"
+                                onmouseover="this.style.background='#dcfce7'"
+                                onmouseout="this.style.background='#f0fdf4'">₹1,000</button>
+                            <button type="button" onclick="document.getElementById('depositModalAmount').value='5000'"
+                                style="padding: 6px 14px; background: #f0fdf4; color: #059669; border: 1.5px solid #bbf7d0; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;"
+                                onmouseover="this.style.background='#dcfce7'"
+                                onmouseout="this.style.background='#f0fdf4'">₹5,000</button>
+                            <button type="button" onclick="document.getElementById('depositModalAmount').value='10000'"
+                                style="padding: 6px 14px; background: #f0fdf4; color: #059669; border: 1.5px solid #bbf7d0; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;"
+                                onmouseover="this.style.background='#dcfce7'"
+                                onmouseout="this.style.background='#f0fdf4'">₹10,000</button>
+                            <button type="button" onclick="document.getElementById('depositModalAmount').value='50000'"
+                                style="padding: 6px 14px; background: #f0fdf4; color: #059669; border: 1.5px solid #bbf7d0; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s;"
+                                onmouseover="this.style.background='#dcfce7'"
+                                onmouseout="this.style.background='#f0fdf4'">₹50,000</button>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" onclick="closeModal('depositMoneyModal')"
+                            style="flex: 1; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;">Cancel</button>
+                        <button type="submit"
+                            style="flex: 2; padding: 14px; background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(16,185,129,0.3); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="fas fa-check-circle"></i> Confirm Deposit
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Withdraw Money Modal (Premium Redesign) -->
+    <div id="withdrawMoneyModal" class="modal">
+        <div class="modal-content" style="max-width: 440px; border-radius: 20px; overflow: hidden; padding: 0;">
+            <!-- Header -->
+            <div
+                style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); padding: 24px 28px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <div
+                        style="width: 46px; height: 46px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white;">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                    <div>
+                        <h3 style="margin: 0; font-size: 20px; font-weight: 800; color: white;">Withdraw Funds</h3>
+                        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.8);">Debit money from account
+                        </p>
+                    </div>
+                </div>
+                <button onclick="closeModal('withdrawMoneyModal')"
+                    style="background: rgba(255,255,255,0.2); border: none; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; color: white; font-size: 18px; display: flex; align-items: center; justify-content: center;">&times;</button>
+            </div>
+
+            <div style="padding: 24px 28px 28px;">
+                <!-- Account Info Card -->
+                <div
+                    style="background: #fff5f5; border: 1.5px solid #fecaca; border-radius: 12px; padding: 14px 16px; margin-bottom: 20px; display: flex; align-items: center; gap: 12px;">
+                    <div
+                        style="width: 36px; height: 36px; background: #ef4444; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: white; flex-shrink: 0;">
+                        <i class="fas fa-university" style="font-size: 15px;"></i>
+                    </div>
+                    <div>
+                        <div
+                            style="font-size: 11px; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Target Account</div>
+                        <div id="withdrawModalAccountIdDisplay"
+                            style="font-size: 15px; font-weight: 700; color: #111827; font-family: monospace; letter-spacing: 1px;">
+                        </div>
+                    </div>
+                </div>
+                <input type="hidden" id="withdrawModalAccountId">
+
+                <form onsubmit="submitStaffWithdrawModal(event)">
+                    <!-- Amount Input -->
+                    <div style="margin-bottom: 16px;">
+                        <label
+                            style="font-size: 13px; font-weight: 700; color: #374151; display: block; margin-bottom: 8px;">
+                            <i class="fas fa-rupee-sign" style="margin-right: 5px; color: #ef4444;"></i>Amount to
+                            Withdraw
+                        </label>
+                        <div style="position: relative;">
+                            <span
+                                style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 18px; font-weight: 700; color: #6b7280;">₹</span>
+                            <input type="number" step="0.01" min="1" id="withdrawModalAmount" placeholder="0.00"
+                                required class="form-control"
+                                style="width: 100%; padding: 14px 14px 14px 36px; border: 2px solid #e5e7eb; border-radius: 12px; font-size: 22px; font-weight: 700; color: #111827; box-sizing: border-box; outline: none; transition: border-color 0.2s;"
+                                onfocus="this.style.borderColor='#ef4444'" onblur="this.style.borderColor='#e5e7eb'">
+                        </div>
+                    </div>
+
+                    <!-- Quick Amount Buttons -->
+                    <div style="margin-bottom: 20px;">
+                        <div style="font-size: 12px; font-weight: 600; color: #6b7280; margin-bottom: 8px;">Quick
+                            Amounts</div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="document.getElementById('withdrawModalAmount').value='500'"
+                                style="padding: 6px 14px; background: #fff5f5; color: #dc2626; border: 1.5px solid #fecaca; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;"
+                                onmouseover="this.style.background='#fee2e2'"
+                                onmouseout="this.style.background='#fff5f5'">₹500</button>
+                            <button type="button" onclick="document.getElementById('withdrawModalAmount').value='1000'"
+                                style="padding: 6px 14px; background: #fff5f5; color: #dc2626; border: 1.5px solid #fecaca; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;"
+                                onmouseover="this.style.background='#fee2e2'"
+                                onmouseout="this.style.background='#fff5f5'">₹1,000</button>
+                            <button type="button" onclick="document.getElementById('withdrawModalAmount').value='5000'"
+                                style="padding: 6px 14px; background: #fff5f5; color: #dc2626; border: 1.5px solid #fecaca; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;"
+                                onmouseover="this.style.background='#fee2e2'"
+                                onmouseout="this.style.background='#fff5f5'">₹5,000</button>
+                            <button type="button" onclick="document.getElementById('withdrawModalAmount').value='10000'"
+                                style="padding: 6px 14px; background: #fff5f5; color: #dc2626; border: 1.5px solid #fecaca; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;"
+                                onmouseover="this.style.background='#fee2e2'"
+                                onmouseout="this.style.background='#fff5f5'">₹10,000</button>
+                            <button type="button" onclick="document.getElementById('withdrawModalAmount').value='50000'"
+                                style="padding: 6px 14px; background: #fff5f5; color: #dc2626; border: 1.5px solid #fecaca; border-radius: 20px; font-size: 13px; font-weight: 600; cursor: pointer;"
+                                onmouseover="this.style.background='#fee2e2'"
+                                onmouseout="this.style.background='#fff5f5'">₹50,000</button>
+                        </div>
+                    </div>
+
+                    <!-- Warning Note -->
+                    <div
+                        style="background: #fff5f5; border: 1px solid #fecaca; border-radius: 10px; padding: 10px 14px; margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-exclamation-triangle" style="color: #dc2626; font-size: 13px;"></i>
+                        <span style="font-size: 12px; color: #7f1d1d; font-weight: 500;">Ensure sufficient balance
+                            before confirming withdrawal</span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" onclick="closeModal('withdrawMoneyModal')"
+                            style="flex: 1; padding: 14px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer;">Cancel</button>
+                        <button type="submit"
+                            style="flex: 2; padding: 14px; background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(239,68,68,0.3); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <i class="fas fa-check-circle"></i> Confirm Withdraw
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Mutual Fund Modal -->
+    <div id="mfModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Invest in Mutual Funds</h3>
+                <span class="close-modal" onclick="closeModal('mfModal')"
+                    style="cursor:pointer; font-size:24px;">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; color: var(--text-secondary);">Select a top-performing Mutual Fund to
+                    invest your savings.</p>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <!-- MF 1 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0 0 5px 0;">Alpha Growth Fund</h4>
+                            <p style="margin: 0; font-size: 14px; color: var(--text-secondary);">Min Investment: ₹5,000
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span
+                                style="display: block; color: var(--success); font-weight: bold; font-size: 18px;">+18%
+                                p.a.</span>
+                            <button class="btn btn-primary" style="padding: 5px 15px; font-size: 14px; margin-top: 5px;"
+                                onclick="alert('Alpha Growth Fund selected! Redirecting...')">Invest</button>
+                        </div>
+                    </div>
+                    <!-- MF 2 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0 0 5px 0;">Smart Wealth Builder</h4>
+                            <p style="margin: 0; font-size: 14px; color: var(--text-secondary);">Min Investment: ₹2,000
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span
+                                style="display: block; color: var(--success); font-weight: bold; font-size: 18px;">+18%
+                                p.a.</span>
+                            <button class="btn btn-primary" style="padding: 5px 15px; font-size: 14px; margin-top: 5px;"
+                                onclick="alert('Smart Wealth Builder selected! Redirecting...')">Invest</button>
+                        </div>
+                    </div>
+                    <!-- MF 3 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="margin: 0 0 5px 0;">Secure Future Flexi-Cap</h4>
+                            <p style="margin: 0; font-size: 14px; color: var(--text-secondary);">Min Investment: ₹5,000
+                            </p>
+                        </div>
+                        <div style="text-align: right;">
+                            <span
+                                style="display: block; color: var(--success); font-weight: bold; font-size: 18px;">+18%
+                                p.a.</span>
+                            <button class="btn btn-primary" style="padding: 5px 15px; font-size: 14px; margin-top: 5px;"
+                                onclick="alert('Secure Future Flexi-Cap selected! Redirecting...')">Invest</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Life Insurance Modal -->
+    <div id="insuranceModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 class="modal-title">Life Insurance Policies</h3>
+                <span class="close-modal" onclick="closeModal('insuranceModal')"
+                    style="cursor:pointer; font-size:24px;">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 20px; color: var(--text-secondary);">Secure your family's future with our
+                    trusted insurance partners.</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <!-- Policy 1 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center;">
+                        <i class="fas fa-shield-alt"
+                            style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <h4 style="margin: 0 0 5px 0;">Term Protect</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">High cover at low
+                            premiums.</p>
+                        <button class="btn btn-primary" style="width: 100%;"
+                            onclick="alert('Term Protect application started.')">Apply</button>
+                    </div>
+                    <!-- Policy 2 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center;">
+                        <i class="fas fa-heartbeat"
+                            style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <h4 style="margin: 0 0 5px 0;">Health Plus</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">Comprehensive
+                            medical cover.</p>
+                        <button class="btn btn-primary" style="width: 100%;"
+                            onclick="alert('Health Plus application started.')">Apply</button>
+                    </div>
+                    <!-- Policy 3 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center;">
+                        <i class="fas fa-child"
+                            style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <h4 style="margin: 0 0 5px 0;">Child Saver</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">Secure their
+                            education.</p>
+                        <button class="btn btn-primary" style="width: 100%;"
+                            onclick="alert('Child Saver application started.')">Apply</button>
+                    </div>
+                    <!-- Policy 4 -->
+                    <div
+                        style="border: 1px solid var(--border); border-radius: 12px; padding: 15px; text-align: center;">
+                        <i class="fas fa-user-clock"
+                            style="font-size: 24px; color: var(--primary); margin-bottom: 10px;"></i>
+                        <h4 style="margin: 0 0 5px 0;">Retire Easy</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 10px;">Guaranteed
+                            pension plan.</p>
+                        <button class="btn btn-primary" style="width: 100%;"
+                            onclick="alert('Retire Easy application started.')">Apply</button>
+                    </div>
+                </div>
+            </div>
+            <!-- Services Section -->
+            <div id="services" class="page-content">
+                <div class="section-header">
+                    <h2>Service Applications</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="loadServicesPage()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Manage Service Requests</h3>
+                    </div>
+                    <div class="invoice-controls" style="padding: 16px; border-bottom: 1px solid var(--border-color);">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" placeholder="Search applications..." id="serviceSearch">
+                        </div>
+                    </div>
+                    <div id="pendingApplicationsList">
+                        <p style="padding:16px;text-align:center;color:#9ca3af;">No applications found.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- START Support Desk Section -->
+            <div id="supportdesk" class="page-content">
+                <div class="section-header">
+                    <h2>Support Tickets</h2>
+                    <div class="header-actions">
+                        <button class="btn btn-primary" onclick="loadSupportTickets()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table class="data-table" id="supportTable">
+                        <thead>
+                            <tr>
+                                <th>Ticket ID</th>
+                                <th>User</th>
+                                <th>Subject</th>
+                                <th>Priority</th>
+                                <th>Created At</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="supportTableBody">
+                            <!-- Support tickets mapped here via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- END Support Desk Section -->
+
+        </div>
+    </div>
+
+    <script src="api-config.js"></script>
+    <script src="face-auth-fixed.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="staffdash.js"></script>
+    <!-- Send Notification Modal -->
+    <div id="sendNotificationModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Send Notification</h3>
+                <button class="modal-close" onclick="closeModal('sendNotificationModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="sendNotificationForm" onsubmit="submitSendNotification(event)">
+                    <div class="form-group">
+                        <label class="form-label">Recipient User ID</label>
+                        <input type="text" id="notifUserId" class="form-input"
+                            placeholder="User ID or 'ALL' for everyone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Title</label>
+                        <input type="text" id="notifTitle" class="form-input" placeholder="Notification Title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea id="notifMessage" class="form-input" rows="3" placeholder="Notification Message"
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Type</label>
+                        <select id="notifType" class="form-select">
+                            <option value="info">Info</option>
+                            <option value="success">Success</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Alert</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline"
+                            onclick="closeModal('sendNotificationModal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="sendNotifSubmitBtn">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Logout Modal -->
+    <div id="logoutModal" class="modal">
+        <div class="modal-content"
+            style="max-width: 380px; border-radius: 20px; text-align: center; padding: 0; overflow: hidden;">
+            <div style="background: #800000; padding: 30px; color: white;">
+                <div
+                    style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; margin: 0 auto 15px;">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <h3 style="margin: 0; font-size: 20px; font-weight: 800;">Confirm Logout</h3>
+            </div>
+            <div style="padding: 24px;">
+                <p style="color: #6b7280; font-size: 15px; margin-bottom: 24px;">Are you sure you want to exit your
+                    session? All unsaved work may be lost.</p>
+                <div style="display: flex; gap: 12px;">
+                    <button onclick="closeModal('logoutModal')"
+                        style="flex: 1; padding: 12px; background: #f3f4f6; color: #4b5563; border: none; border-radius: 12px; font-weight: 600; cursor: pointer;">Cancel</button>
+                    <button id="confirmLogoutBtn"
+                        style="flex: 1; padding: 12px; background: #800000; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(128,0,0,0.2);">Logout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Details Modal (Premium Redesign) -->
+    <div id="viewAccountModal" class="modal">
+        <div class="modal-content"
+            style="max-width: 800px; border-radius: 24px; overflow: hidden; padding: 0; background: #fff; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);">
+            <!-- Modal Header -->
+            <div
+                style="background: linear-gradient(135deg, #800000 0%, #a52a2a 100%); padding: 30px 40px; display: flex; justify-content: space-between; align-items: center; color: white;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div
+                        style="width: 56px; height: 56px; background: rgba(255,255,255,0.15); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; border: 1px solid rgba(255,255,255,0.2);">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <div>
+                        <h3 id="viewAccNumberDisplay"
+                            style="margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.5px;">Account
+                            Details</h3>
+                        <p id="viewAccStatusDisplay"
+                            style="margin: 4px 0 0; font-size: 14px; color: rgba(255,255,255,0.8); display: flex; align-items: center; gap: 6px;">
+                            <span style="width: 8px; height: 8px; border-radius: 50%; background: #4ade80;"></span>
+                            Active Account
+                        </p>
+                    </div>
+                </div>
+                <button onclick="closeModal('viewAccountModal')"
+                    style="background: rgba(255,255,255,0.15); border: none; width: 40px; height: 40px; border-radius: 12px; cursor: pointer; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px; transition: all 0.2s;">&times;</button>
+            </div>
+
+            <!-- Modal Body -->
+            <div style="padding: 40px; max-height: 70vh; overflow-y: auto;">
+
+                <!-- Info Grid -->
+                <div
+                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                    <!-- Account Section -->
+                    <div style="padding: 24px; background: #f8fafc; border-radius: 20px; border: 1px solid #f1f5f9;">
+                        <h4
+                            style="margin: 0 0 16px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700;">
+                            Account Info</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div>
+                                <span
+                                    style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 2px;">Type</span>
+                                <span id="viewAccType"
+                                    style="font-weight: 700; color: #1e293b; font-size: 15px;">—</span>
+                            </div>
+                            <div>
+                                <span
+                                    style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 2px;">Available
+                                    Balance</span>
+                                <span id="viewAccBalance"
+                                    style="font-weight: 800; color: #800000; font-size: 18px;">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customer Section -->
+                    <div style="padding: 24px; background: #f8fafc; border-radius: 20px; border: 1px solid #f1f5f9;">
+                        <h4
+                            style="margin: 0 0 16px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700;">
+                            Customer Details</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div>
+                                <span
+                                    style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 2px;">Customer
+                                    Name</span>
+                                <span id="viewAccCustomer"
+                                    style="font-weight: 700; color: #1e293b; font-size: 15px;">—</span>
+                            </div>
+                            <div>
+                                <span style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 2px;">Phone
+                                    Number</span>
+                                <span id="viewAccPhone"
+                                    style="font-weight: 600; color: #475569; font-size: 14px;">—</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bank Section -->
+                    <div style="padding: 24px; background: #f8fafc; border-radius: 20px; border: 1px solid #f1f5f9;">
+                        <h4
+                            style="margin: 0 0 16px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; color: #64748b; font-weight: 700;">
+                            Branch Info</h4>
+                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                            <div>
+                                <span style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 2px;">IFSC
+                                    Code</span>
+                                <span id="viewAccIfsc"
+                                    style="font-weight: 700; color: #1e293b; font-size: 14px;">—</span>
+                            </div>
+                            <div>
+                                <span
+                                    style="font-size: 12px; color: #94a3b8; display: block; margin-bottom: 2px;">Branch
+                                    Name</span>
+                                <span id="viewAccBranch"
+                                    style="font-weight: 600; color: #475569; font-size: 14px;">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Section -->
+                <div>
+                    <h4
+                        style="margin: 0 0 20px; font-size: 15px; color: #1e293b; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-history" style="color: #64748b;"></i> Recent Transactions
+                    </h4>
+                    <div style="border: 1px solid #f1f5f9; border-radius: 16px; overflow: hidden; background: #fff;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="background: #f8fafc; border-bottom: 1px solid #f1f5f9;">
+                                    <th
+                                        style="padding: 14px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
+                                        ID</th>
+                                    <th
+                                        style="padding: 14px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
+                                        Description</th>
+                                    <th
+                                        style="padding: 14px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
+                                        Type</th>
+                                    <th
+                                        style="padding: 14px 20px; text-align: right; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
+                                        Amount</th>
+                                    <th
+                                        style="padding: 14px 20px; text-align: left; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: uppercase;">
+                                        Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="viewAccTransactionsList">
+                                <!-- Dynamic Content -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div
+                style="padding: 24px 40px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end;">
+                <button onclick="closeModal('viewAccountModal')"
+                    style="padding: 12px 28px; background: #1e293b; color: white; border: none; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 15px; transition: all 0.2s;">Close
+                    Details</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Action Modals -->
+    <div id="cardActionModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; border-radius: 20px; overflow: hidden; padding: 0;">
+            <div id="cardActionHeader" style="padding: 25px; color: white; text-align: center;">
+                <div id="cardActionIcon"
+                    style="width: 50px; height: 50px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; margin: 0 auto 10px;">
+                    <i class="fas fa-credit-card"></i>
+                </div>
+                <h3 id="cardActionTitle" style="margin: 0;">Card Request</h3>
+            </div>
+            <div style="padding: 20px; text-align: center;">
+                <p id="cardActionMessage" style="color: #4b5563; margin-bottom: 20px;"></p>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="closeModal('cardActionModal')" class="btn btn-outline"
+                        style="flex: 1;">Cancel</button>
+                    <button id="confirmCardActionBtn" class="btn btn-primary" style="flex: 1;">Confirm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+
+</html>
