@@ -39,6 +39,12 @@ def seed_default_data():
                     ('S001', generate_password_hash('staff123'), 'Rajesh Kumar', 'rajesh@smartbank.com', 'Operations', 'Senior Teller')
                 )
                 
+                # Bonus Staff (from user screenshot): yasir / Yasir123#
+                db.execute(
+                    "INSERT INTO staff (staff_id, password, name, email, department, position) VALUES (?, ?, ?, ?, ?, ?)",
+                    ('yasir', generate_password_hash('Yasir123#'), 'Yasir Staff', 'yasir@smartbank.com', 'Management', 'Manager')
+                )
+                
                 # Default User: rajesh / user123
                 db.execute(
                     "INSERT INTO users (username, password, email, name, phone) VALUES (?, ?, ?, ?)",
