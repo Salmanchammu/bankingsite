@@ -128,13 +128,17 @@ window.fetch = async function (url, options) {
 
     try {
         const response = await originalFetch(url, options);
+        
         if (response.status === 401 && isInternalAPI && !url.includes('/auth/')) {
             const loginUrl = (window.SmartBankDeviceDetector && window.SmartBankDeviceDetector.getLoginUrl) 
                 ? window.SmartBankDeviceDetector.getLoginUrl() 
                 : 'user.html';
             
-            // Guard: Only redirect if not already on the login page to avoid refresh loops
-            if (!window.location.pathname.includes(loginUrl)) {
+            // Guard: Only redirect if not already on a login/public page to avoid refresh loops
+            const publicPages = ['user.html', 'signup.html', 'forgot-password.html', 'mobile-auth.html', 'mobile-signup.html', 'mobile-forgot-password.html', 'index.html'];
+            const isOnPublicPage = publicPages.some(page => window.location.pathname.includes(page));
+            
+            if (!isOnPublicPage) {
                 window.location.href = loginUrl;
             }
         }
