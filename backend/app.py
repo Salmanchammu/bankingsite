@@ -198,7 +198,7 @@ def init_db():
     """Initialize database with schema"""
     with app.app_context():
         db = get_db()
-        schema_path = os.path.join(os.path.dirname(__file__), '..', 'database', 'schema.sql')
+        schema_path = os.path.join(os.path.dirname(__file__), '..', 'storage', 'database', 'schema.sql')
         if os.path.exists(schema_path):
             with open(schema_path, 'r') as f:
                 db.executescript(f.read())
