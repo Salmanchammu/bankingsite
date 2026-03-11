@@ -198,7 +198,7 @@ def init_db():
     """Initialize database with schema"""
     with app.app_context():
         db = get_db()
-        schema_path = os.path.join(os.path.dirname(__file__), '..', 'storage', 'database', 'schema.sql')
+        schema_path = os.path.join(os.path.dirname(__file__), 'schema.sql')
         if os.path.exists(schema_path):
             with open(schema_path, 'r') as f:
                 db.executescript(f.read())
@@ -222,6 +222,7 @@ def init_db():
                     applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     processed_at TIMESTAMP,
                     rejection_reason TEXT,
+                    aadhaar_number VARCHAR(20),
                     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
                     FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE SET NULL
                 )
@@ -234,6 +235,31 @@ def init_db():
         except sqlite3.OperationalError:
             logger.info("Migrating database: Adding profile_image column to users table")
             db.execute('ALTER TABLE users ADD COLUMN profile_image VARCHAR(255)')
+            db.commit()
+
+        # Migrate device_type to users, staff, admins
+        for table in ['users', 'staff', 'admins']:
+            try:
+                db.execute(f'SELECT device_type FROM {table} LIMIT 1')
+            except sqlite3.OperationalError:
+                logger.info(f"Migrating database: Adding device_type column to {table} table")
+                db.execute(f'ALTER TABLE {table} ADD COLUMN device_type VARCHAR(50) DEFAULT "unknown"')
+                db.commit()
+
+        # Migrate daily_limit to users
+        try:
+            db.execute('SELECT daily_limit FROM users LIMIT 1')
+        except sqlite3.OperationalError:
+            logger.info("Migrating database: Adding daily_limit column to users table")
+            db.execute('ALTER TABLE users ADD COLUMN daily_limit DECIMAL(15, 2) DEFAULT 200000.00')
+            db.commit()
+
+        # Migrate aadhaar_number to service_applications
+        try:
+            db.execute('SELECT aadhaar_number FROM service_applications LIMIT 1')
+        except sqlite3.OperationalError:
+            logger.info("Migrating database: Adding aadhaar_number column to service_applications table")
+            db.execute('ALTER TABLE service_applications ADD COLUMN aadhaar_number VARCHAR(20)')
             db.commit()
 
 @app.teardown_appcontext

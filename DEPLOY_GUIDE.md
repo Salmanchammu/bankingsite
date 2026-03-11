@@ -7,7 +7,7 @@
 > 2. **Manual Settings** (if not using blueprint):
 >    - **Build Command**: `pip install -r requirements.txt`
 >    - **Start Command**: `gunicorn render_app:app`
->    - **Disk**: Mount a persistent disk at `/opt/render/project/src/database` to persist SQLite data.
+>    - **Disk**: Mount a persistent disk at `/opt/render/project/src/storage` to persist SQLite data (matches `render.yaml`).
 
 ---
 
@@ -35,7 +35,7 @@ Since the Flask backend serves the frontend static files, they are deployed toge
 ## 2. Database Deployment
 The project currently uses **SQLite**, which is a file-based database.
 
-- **Persistence**: If using a PaaS (like Render or Railway), ensure you use "Persistent Disks" or "Volumes" to store the `database/smart_bank.db` file. Otherwise, data will be lost every time the server restarts.
+- **Persistence**: If using a PaaS (like Render or Railway), ensure you use "Persistent Disks" or "Volumes" to store the `storage/database/smart_bank.db` file. Otherwise, data will be lost every time the server restarts.
 - **Production Grade (Scaling)**: For a high-traffic production app, it is highly recommended to migrate from SQLite to **PostgreSQL** or **MySQL**.
     - You would need to update the `get_db()` function in `backend/app.py` to use a driver like `psycopg2` and a connection string.
 

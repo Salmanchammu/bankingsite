@@ -1,0 +1,28 @@
+Tables in database (131960832 bytes):
+ - users: 10 rows
+ - sqlite_sequence: 14 rows
+ - staff: 1 rows
+ - admins: 1 rows
+ - system_audit: 53 rows
+ - accounts: 8 rows
+ - transactions: 16 rows
+ - cards: 0 rows
+ - card_requests: 3 rows
+ - account_requests: 7 rows
+ - loans: 2 rows
+ - chat_history: 8 rows
+ - support_tickets: 2 rows
+ - notifications: 0 rows
+ - attendance: 0 rows
+ - system_finances: 1 rows
+ - user_activity_logs: 100 rows
+ - service_applications: 1 rows
+
+Admins:
+ - (1, 'salman', 'Salman Admin', 'salman@smartbank.com', 'admin')
+
+Staff:
+ - (1, 'yasir', 'Yasir Staff', 'yasir@smartbank.com', 'General')
+
+System Finances:
+ - (1, 'Loan Liquidity Fund', 1030000, '2026-03-06 18:04:18')

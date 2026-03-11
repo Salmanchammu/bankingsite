@@ -19,7 +19,7 @@ The backend is built with Flask and serves as the API and static file server.
    ```
 3. (Optional) Run the automated setup script to check dependencies and initialize the database:
    ```powershell
-   python setup.py
+   python scripts/setup.py
    ```
 4. Start the Flask server:
    ```powershell
@@ -46,5 +46,5 @@ Use these accounts to test the system:
 | **Admin** | `admin` | `admin123` |
 
 ## Troubleshooting
-- **Database Error**: If you see database-related errors, ensure `database/smart_bank.db` exists. You can re-initialize it by running `python database/migrations/init_database.py`.
+- **Database Error**: If you see database-related errors, ensure `storage/database/smart_bank.db` exists. You can re-initialize it by running `python storage/database/migrations/init_database.py`.
 - **Port Conflict**: If port 5000 is occupied, you can change the port in `backend/app.py` at the bottom of the file.

@@ -34,7 +34,9 @@ CREATE TABLE users (
     passcode_enabled INTEGER DEFAULT 0,
     otp VARCHAR(10),
     otp_expiry TIMESTAMP,
-    profile_image VARCHAR(255)
+    profile_image VARCHAR(255),
+    device_type VARCHAR(50) DEFAULT 'unknown',
+    daily_limit DECIMAL(15, 2) DEFAULT 200000.00
 );
 
 -- Staff table (WITH face authentication)
@@ -51,7 +53,8 @@ CREATE TABLE staff (
     face_auth_enabled INTEGER DEFAULT 0,
     face_descriptor TEXT,
     base_salary DECIMAL(15, 2) DEFAULT 50000.00,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    device_type VARCHAR(50) DEFAULT 'unknown'
 );
 
 -- Admins table (WITH face authentication)
@@ -65,7 +68,8 @@ CREATE TABLE admins (
     status VARCHAR(20) DEFAULT 'active',
     face_auth_enabled INTEGER DEFAULT 0,
     face_descriptor TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    device_type VARCHAR(50) DEFAULT 'unknown'
 );
 
 -- System Audit table
@@ -285,4 +289,21 @@ CREATE TABLE IF NOT EXISTS user_activity_logs (
     ip_address TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS service_applications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    account_id INTEGER,
+    service_type VARCHAR(50) NOT NULL,
+    product_name VARCHAR(100) NOT NULL,
+    amount DECIMAL(15, 2),
+    tenure VARCHAR(50),
+    status VARCHAR(20) DEFAULT 'pending',
+    applied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    processed_at TIMESTAMP,
+    rejection_reason TEXT,
+    aadhaar_number VARCHAR(20),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE SET NULL
 );
