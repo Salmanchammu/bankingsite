@@ -130,7 +130,7 @@ body {
     flex: 1;
     overflow-y: auto;
     min-height: 0;
-    padding-bottom: 90px; /* Space for the absolute bottom nav */
+    padding-bottom: 120px; /* Increased space for bottom nav and center button */
 }
 
 .page-content.active {
@@ -688,14 +688,20 @@ body {
 .auth-links {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
+    margin-top: 25px;
     font-size: 14px;
+    position: relative;
+    z-index: 3000; /* Ensure on top of bottom nav and chatbot */
+    padding: 10px 0;
 }
 
 .auth-links a {
     color: var(--primary-maroon);
     text-decoration: none;
-    font-weight: 500;
+    font-weight: 600;
+    pointer-events: auto !important;
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
 }
 
 /* Form Styles */
