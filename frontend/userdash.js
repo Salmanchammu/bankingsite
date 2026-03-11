@@ -53,7 +53,11 @@ const init = async () => {
     initSecurity(); // Initialize Screenshot & Privacy Protection
 
     const ok = await checkAuth();
-    if (!ok) { window.location.href = 'user.html'; return; }
+    if (!ok) { 
+        const loginUrl = (window.SmartBankDeviceDetector && window.SmartBankDeviceDetector.getLoginUrl) ? window.SmartBankDeviceDetector.getLoginUrl() : 'user.html';
+        window.location.href = loginUrl; 
+        return; 
+    }
 
     await loadAll();
     initNav();
@@ -94,7 +98,8 @@ async function logout() {
         onConfirm: async () => {
             try { await fetch(`${API}/auth/logout`, { method: 'POST', credentials: 'include' }); } catch { }
             sessionStorage.clear(); localStorage.clear();
-            window.location.href = 'user.html';
+            const loginUrl = (window.SmartBankDeviceDetector && window.SmartBankDeviceDetector.getLoginUrl) ? window.SmartBankDeviceDetector.getLoginUrl() : 'user.html';
+            window.location.href = loginUrl;
         }
     });
 }

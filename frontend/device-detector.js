@@ -25,13 +25,27 @@
 
         getDeviceType: function () {
             const ua = navigator.userAgent;
+            const width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+            
+            // Primary check: User Agent
             if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
                 return "tablet";
             }
             if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
                 return "mobile";
             }
+
+            // Secondary check: Screen Width fallback for tricky mobile devices
+            if (width <= 850) {
+                return "mobile";
+            }
+
             return "desktop";
+        },
+
+        // Helper to get the correct login page based on device
+        getLoginUrl: function() {
+            return (this.getDeviceType() === 'mobile' || this.getDeviceType() === 'tablet') ? 'mobile-auth.html' : 'user.html';
         },
 
         checkAndRedirect: function () {

@@ -129,7 +129,10 @@ window.fetch = async function (url, options) {
     try {
         const response = await originalFetch(url, options);
         if (response.status === 401 && isInternalAPI && !url.includes('/auth/')) {
-            window.location.href = 'user.html';
+            const loginUrl = (window.SmartBankDeviceDetector && window.SmartBankDeviceDetector.getLoginUrl) 
+                ? window.SmartBankDeviceDetector.getLoginUrl() 
+                : 'user.html';
+            window.location.href = loginUrl;
         }
         return response;
     } catch (error) {
