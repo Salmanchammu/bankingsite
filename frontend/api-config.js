@@ -115,8 +115,11 @@ window.fetch = async function (url, options) {
     if (!options) options = {};
     if (!options.headers) options.headers = {};
 
-    const isInternalAPI = typeof url === 'string' && (url.includes(':5000/api') || url.includes('/api/'));
+    const urlString = typeof url === 'string' ? url : (url instanceof URL ? url.href : '');
+    const isInternalAPI = urlString.includes('/api/') || urlString.includes(':5000/api');
+    
     if (isInternalAPI) {
+        console.log(`[Fetch Debug] ${options.method || 'GET'} -> ${urlString}`);
         options.credentials = 'include';
         // Add tunnel bypass headers anyway
         if (options.headers instanceof Headers) {

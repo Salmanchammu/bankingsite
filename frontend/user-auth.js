@@ -112,7 +112,10 @@ async function userLogin(e) {
     // Try backend first
     try {
         const baseURL = window.API || '/api';
-        const response = await fetch(`${baseURL}/auth/login`, {
+        const loginURL = `${baseURL}/auth/login`;
+        console.log(`[Login Debug] Attempting login at: ${loginURL}`);
+
+        const response = await fetch(loginURL, {
             method: 'POST',
             credentials: 'include',
             headers: {
@@ -126,6 +129,7 @@ async function userLogin(e) {
             })
         });
 
+        console.log(`[Login Debug] Response status: ${response.status}`);
         const data = await response.json();
 
         if (response.ok) {

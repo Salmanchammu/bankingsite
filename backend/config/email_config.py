@@ -15,5 +15,15 @@ SMTP_USE_SSL = os.environ.get("SMTP_USE_SSL", "false").lower() == "true"
 
 # Resend API Configuration
 # By default, Resend requires a verified domain. 
-# For testing, you can use "onboarding@resend.dev" which only sends to your own email.
-RESEND_FROM = os.environ.get("RESEND_FROM", f"Smart Bank <{SENDER_EMAIL}>")
+# RECOMMENDED: verify "buildforbank.com" in Resend dashboard
+# RESEND_FROM = "Smart Bank <support@buildforbank.com>"
+
+_RESEND_KEY = os.environ.get("RESEND_API_KEY")
+_ON_CLOUD = any(os.environ.get(k) for k in ['RENDER', 'RAILWAY_ENVIRONMENT', 'PORT'])
+
+# Intelligent fallback for RESEND_FROM
+# If on cloud and key exists, but no verified sender is set, fallback to onboarding@resend.dev
+if _RESEND_KEY and _ON_CLOUD and not os.environ.get("RESEND_FROM"):
+    RESEND_FROM = "Smart Bank <onboarding@resend.dev>"
+else:
+    RESEND_FROM = os.environ.get("RESEND_FROM", f"Smart Bank <{SENDER_EMAIL}>")

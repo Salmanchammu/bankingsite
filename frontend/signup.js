@@ -38,8 +38,10 @@ async function handleSignup(e) {
     btn.disabled = true;
 
     try {
+        console.log(`[Signup Debug] Sending signup request to: ${API_URL}/auth/signup`);
         const response = await fetch(`${API_URL}/auth/signup`, {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(userData)
         });
@@ -79,8 +81,10 @@ async function handleOtpVerification(e) {
     btn.disabled = true;
 
     try {
+        console.log(`[OTP Debug] Verifying OTP for ${username} at: ${API_URL}/auth/verify-otp`);
         const response = await fetch(`${API_URL}/auth/verify-otp`, {
             method: 'POST',
+            credentials: 'include',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, otp })
         });
@@ -125,8 +129,10 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!username) return showToast('Session expired. Please signup again.', 'error');
 
             try {
+                console.log(`[OTP Debug] Requesting OTP resend for ${username}`);
                 const response = await fetch(`${API_URL}/auth/resend-otp`, {
                     method: 'POST',
+                    credentials: 'include',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ username })
                 });
